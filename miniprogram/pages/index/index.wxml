@@ -1,0 +1,121 @@
+<view class="container">
+  <!-- 标题 -->
+  <view class="header">
+    <view class="title">儿童生长发育评估</view>
+    <view class="subtitle">基于首都儿科研究所0-18岁儿童生长标准</view>
+  </view>
+
+  <!-- 基本信息 -->
+  <view class="card">
+    <view class="card-title">基本信息</view>
+    
+    <!-- 性别选择 -->
+    <view class="form-item">
+      <view class="form-label">性别</view>
+      <view class="gender-select">
+        <view 
+          class="gender-btn {{gender === 'boy' ? 'active' : ''}}" 
+          bindtap="selectGender" 
+          data-gender="boy"
+        >男</view>
+        <view 
+          class="gender-btn {{gender === 'girl' ? 'active' : ''}}" 
+          bindtap="selectGender" 
+          data-gender="girl"
+        >女</view>
+      </view>
+    </view>
+
+    <!-- 年龄选择 -->
+    <view class="form-item">
+      <view class="form-label">年龄</view>
+      <view class="age-input">
+        <input 
+          type="number" 
+          value="{{ageYear}}" 
+          bindinput="onAgeYearInput" 
+          placeholder="0"
+          class="input age"
+        />
+        <text class="unit">岁</text>
+        <input 
+          type="number" 
+          value="{{ageMonth}}" 
+          bindinput="onAgeMonthInput" 
+          placeholder="0"
+          class="input age"
+        />
+        <text class="unit">月</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 体格测量 -->
+  <view class="card">
+    <view class="card-title">体格测量</view>
+    
+    <!-- 身高 -->
+    <view class="form-item">
+      <view class="form-label">身高 (cm)</view>
+      <input 
+        type="digit" 
+        value="{{height}}" 
+        bindinput="onHeightInput" 
+        placeholder="请输入身高"
+        class="input full"
+      />
+    </view>
+
+    <!-- 体重 -->
+    <view class="form-item">
+      <view class="form-label">体重 (kg)</view>
+      <input 
+        type="digit" 
+        value="{{weight}}" 
+        bindinput="onWeightInput" 
+        placeholder="请输入体重"
+        class="input full"
+      />
+    </view>
+  </view>
+
+  <!-- 血压（可选） -->
+  <view class="card optional">
+    <view class="card-title">血压（选填）</view>
+    <view class="form-hint">如果不测量血压，可以不填</view>
+    
+    <view class="form-item">
+      <view class="form-label">收缩压 (mmHg)</view>
+      <input 
+        type="number" 
+        value="{{systolic}}" 
+        bindinput="onSystolicInput" 
+        placeholder="如：90"
+        class="input full"
+      />
+    </view>
+
+    <view class="form-item">
+      <view class="form-label">舒张压 (mmHg)</view>
+      <input 
+        type="number" 
+        value="{{diastolic}}" 
+        bindinput="onDiastolicInput" 
+        placeholder="如：60"
+        class="input full"
+      />
+    </view>
+  </view>
+
+  <!-- 评估按钮 -->
+  <button class="btn-assess" bindtap="doAssess" disabled="{{!canAssess}}">
+    开始评估
+  </button>
+
+  <!-- 说明 -->
+  <view class="info">
+    <view class="info-title">数据来源</view>
+    <view class="info-text">身高、体重数据来自首都儿科研究所《中国0~18岁儿童、青少年身高、体重的标准化生长曲线》（中华儿科杂志，2009年）</view>
+    <view class="info-text">血压评估参考《中国儿童青少年血压参考标准》</view>
+  </view>
+</view>

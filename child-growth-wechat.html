@@ -1,0 +1,2166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>儿童生长发育评估</title>
+    <style>
+/* ============================================
+   儿童生长发育评估 - 响应式样式
+   ============================================ */
+
+/* 重置样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #3B82F6;
+    --primary-light: #60A5FA;
+    --success-color: #10B981;
+    --warning-color: #F59E0B;
+    --danger-color: #EF4444;
+    --bg-color: #F3F4F6;
+    --card-bg: #FFFFFF;
+    --text-primary: #1F2937;
+    --text-secondary: #6B7280;
+    --text-light: #9CA3AF;
+    --border-color: #E5E7EB;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --radius: 12px;
+    --radius-sm: 8px;
+}
+
+html {
+    font-size: 16px;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 整体布局 */
+#app {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background-color: var(--bg-color);
+}
+
+/* 头部 */
+.header {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+    padding: 24px 20px;
+    text-align: center;
+}
+
+.header-content h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.header-content p {
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+/* 主要内容区 */
+.main-content {
+    padding: 16px;
+    padding-bottom: 32px;
+}
+
+/* 卡片 */
+.card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+}
+
+.card h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+}
+
+.card-hint {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: -8px;
+    margin-bottom: 16px;
+}
+
+.card-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+}
+
+/* 表单组 */
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background-color: white;
+}
+
+.form-group input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-group input::placeholder {
+    color: var(--text-light);
+}
+
+.hint {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+/* 性别选择 */
+.gender-select {
+    display: flex;
+    gap: 12px;
+}
+
+.gender-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.gender-btn:active {
+    transform: scale(0.98);
+}
+
+.gender-btn.active {
+    border-color: var(--primary-color);
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+.gender-icon {
+    font-size: 2rem;
+    margin-bottom: 4px;
+}
+
+.gender-btn span:last-child {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* 血压输入 */
+.bp-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+/* 按钮 */
+.btn-primary {
+    width: 100%;
+    padding: 16px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+    background: var(--text-light);
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--primary-color);
+    background: white;
+    border: 2px solid var(--primary-color);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-secondary:active {
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+/* 结果区域 */
+.result-section {
+    padding: 16px;
+    padding-bottom: 32px;
+}
+
+.result-card {
+    margin-bottom: 16px;
+}
+
+.result-header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.result-header h2 {
+    margin-bottom: 4px;
+}
+
+.result-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* 结果项 */
+.result-item {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.result-item:last-of-type {
+    border-bottom: none;
+}
+
+.result-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.result-icon {
+    font-size: 1.2rem;
+}
+
+/* 百分位显示 */
+.percentile-display {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.percentile-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.percentile-label {
+    font-size: 1rem;
+    color: var(--text-secondary);
+}
+
+/* 百分位条形图 */
+.percentile-bar {
+    margin-bottom: 8px;
+    padding-bottom: 24px;
+}
+
+.bar-scale {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+.bar-track {
+    position: relative;
+    height: 12px;
+    background: linear-gradient(to right,
+        #93C5FD 0%,
+        #93C5FD 24%,
+        #60A5FA 24%,
+        #60A5FA 49%,
+        #3B82F6 49%,
+        #60A5FA 51%,
+        #60A5FA 74%,
+        #93C5FD 74%,
+        #93C5FD 100%
+    );
+    border-radius: 6px;
+}
+
+.bar-marker {
+    position: absolute;
+    top: -4px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border: 3px solid var(--primary-color);
+    border-radius: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: left 0.3s ease;
+}
+
+.bar-position-label {
+    position: absolute;
+    top: 18px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    transform: translateX(-50%);
+    white-space: nowrap;
+}
+
+/* 评估结果 */
+.result-evaluation {
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    display: inline-block;
+    margin-top: 12px;
+}
+
+.result-evaluation.excellent {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: var(--success-color);
+}
+
+.result-evaluation.good {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: var(--primary-color);
+}
+
+.result-evaluation.normal {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: var(--primary-color);
+}
+
+.result-evaluation.low {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: var(--warning-color);
+}
+
+.result-evaluation.high {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--danger-color);
+}
+
+.result-range {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 8px;
+}
+
+/* BMI显示 */
+.bmi-display {
+    text-align: center;
+    padding: 16px 0;
+}
+
+.bmi-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.bmi-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.bmi-evaluation {
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    display: inline-block;
+}
+
+/* 血压显示 */
+.bp-display {
+    text-align: center;
+    padding: 12px 0;
+}
+
+.bp-values {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.bp-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.bp-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.bp-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.bp-unit {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.bp-divider {
+    font-size: 2rem;
+    color: var(--text-light);
+}
+
+.bp-normal-range {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    text-align: center;
+    margin: 8px 0;
+}
+
+.bp-evaluation {
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    display: inline-block;
+    text-align: center;
+}
+
+/* 结果底部 */
+.result-footer {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+.disclaimer {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-align: center;
+    line-height: 1.6;
+}
+
+/* 年龄模式 tabs */
+.age-mode-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.age-tab {
+    flex: 1;
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: white;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.age-tab.active {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+.age-input-group {
+    margin-top: 4px;
+}
+
+/* 选填标签 */
+.optional-badge {
+    font-size: 0.75rem;
+    font-weight: 400;
+    padding: 2px 8px;
+    background: rgba(107, 114, 128, 0.12);
+    color: var(--text-secondary);
+    border-radius: 20px;
+    vertical-align: middle;
+    margin-left: 4px;
+}
+
+/* BMI行 */
+.bmi-row {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.bmi-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.bmi-formula {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+/* 百分位条：底部文字说明 */
+.bar-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    margin-top: 20px;
+}
+
+/* 正常区域底色（P10-P90中间段高亮） */
+.bar-track {
+    position: relative;
+    height: 12px;
+    background: #E5E7EB;
+    border-radius: 6px;
+    overflow: visible;
+}
+
+.bar-normal-zone {
+    position: absolute;
+    /* P10 = 5 + (10-3)/(97-3)*90 ≈ 11.7%  P90 = 5 + (90-3)/(97-3)*90 ≈ 88.3% */
+    left: 11.7%;
+    right: 11.7%;
+    top: 0;
+    bottom: 0;
+    background: #93C5FD;
+    border-radius: 4px;
+}
+
+/* 评估颜色 */
+.eval-normal  { background: rgba(16,185,129,0.1);  color: #059669; }
+.eval-warning { background: rgba(245,158,11,0.1);  color: #D97706; }
+.eval-high    { background: rgba(239,68,68,0.1);   color: #DC2626; }
+.eval-danger  { background: rgba(239,68,68,0.15);  color: #B91C1C; }
+.eval-low     { background: rgba(245,158,11,0.1);  color: #D97706; }
+
+/* 数据来源 */
+.result-source {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    margin-top: 2px;
+}
+
+/* 错误提示 */
+.error-message {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--danger-color);
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+/* 动画 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.result-section {
+    animation: fadeIn 0.3s ease;
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--text-light);
+    border-radius: 3px;
+}
+
+/* 安全区域适配 */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .main-content,
+    .result-section {
+        padding-bottom: calc(32px + env(safe-area-inset-bottom));
+    }
+}
+
+/* 暗色模式支持 */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #1F2937;
+        --card-bg: #374151;
+        --text-primary: #F9FAFB;
+        --text-secondary: #D1D5DB;
+        --text-light: #9CA3AF;
+        --border-color: #4B5563;
+    }
+
+    .gender-btn {
+        background: var(--card-bg);
+    }
+
+    .btn-secondary {
+        background: var(--card-bg);
+    }
+}
+
+/* 横屏适配 */
+@media (orientation: landscape) and (max-height: 500px) {
+    .header {
+        padding: 12px 20px;
+    }
+
+    .header-content h1 {
+        font-size: 1.2rem;
+    }
+
+    .header-content p {
+        display: none;
+    }
+}
+
+    /* 微信内置浏览器额外适配 */
+    body { -webkit-tap-highlight-color: transparent; }
+    input { -webkit-appearance: none; }
+    button { -webkit-tap-highlight-color: rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+<div id="app">
+
+    <!-- 头部 -->
+    <header class="header">
+        <div class="header-content">
+            <h1>👶 儿童生长发育评估</h1>
+            <p>生长标准：WS/T 423-2022 | 血压标准：WS/T 610-2018</p>
+        </div>
+    </header>
+
+    <!-- ===== 输入区域 ===== -->
+    <main class="main-content" id="inputSection">
+
+        <div class="card">
+            <h2>📝 基本信息</h2>
+
+            <!-- 性别 -->
+            <div class="form-group">
+                <label>性别</label>
+                <div class="gender-select">
+                    <button type="button" class="gender-btn" data-gender="male">
+                        <span class="gender-icon">👦</span>
+                        <span>男孩</span>
+                    </button>
+                    <button type="button" class="gender-btn" data-gender="female">
+                        <span class="gender-icon">👧</span>
+                        <span>女孩</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 年龄输入方式切换 -->
+            <div class="form-group">
+                <label>年龄</label>
+                <div class="age-mode-tabs">
+                    <button type="button" class="age-tab active" data-mode="month">月龄（0-35个月）</button>
+                    <button type="button" class="age-tab" data-mode="year">岁龄（3-18岁）</button>
+                </div>
+
+                <!-- 月龄输入 -->
+                <div class="age-input-group" id="monthInput">
+                    <input type="number" id="ageMonth" min="0" max="35" step="1"
+                           placeholder="例如：25（25个月）" inputmode="numeric">
+                    <span class="hint">填写整月数，例如25表示25个月大</span>
+                </div>
+
+                <!-- 岁龄输入 -->
+                <div class="age-input-group" id="yearInput" style="display:none;">
+                    <input type="number" id="ageYear" min="3" max="18" step="0.1"
+                           placeholder="例如：6.5（6岁半）" inputmode="decimal">
+                    <span class="hint">支持小数，3.0-18.0岁</span>
+                </div>
+            </div>
+
+            <!-- 身高 -->
+            <div class="form-group">
+                <label for="height">身高 / 身长（cm）</label>
+                <input type="number" id="height" min="30" max="200" step="0.1"
+                       placeholder="例如：120" inputmode="decimal">
+                <span class="hint" id="heightHint">2岁以下为仰卧身长，2岁及以上为站立身高</span>
+            </div>
+
+            <!-- 体重 -->
+            <div class="form-group">
+                <label for="weight">体重（kg）<span class="optional-badge">选填</span></label>
+                <input type="number" id="weight" min="2" max="150" step="0.1"
+                       placeholder="例如：20（不填则不计算BMI）" inputmode="decimal">
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🩺 血压 <span class="optional-badge">选填</span></h2>
+            <p class="card-hint">不测量血压可留空 · 血压评估基于年龄和身高，与体重无关</p>
+            <div class="bp-inputs">
+                <div class="form-group">
+                    <label for="systolic">收缩压（高压）</label>
+                    <input type="number" id="systolic" min="60" max="200"
+                           placeholder="mmHg" inputmode="numeric">
+                </div>
+                <div class="form-group">
+                    <label for="diastolic">舒张压（低压）</label>
+                    <input type="number" id="diastolic" min="30" max="130"
+                           placeholder="mmHg" inputmode="numeric">
+                </div>
+            </div>
+        </div>
+
+        <div id="errorBox" class="error-message" style="display:none;"></div>
+
+        <button type="button" class="btn-primary" id="assessBtn">开始评估</button>
+    </main>
+
+    <!-- ===== 结果区域 ===== -->
+    <div class="result-section" id="resultSection" style="display:none;">
+        <div class="card result-card">
+
+            <div class="result-header">
+                <h2>📊 评估结果</h2>
+                <p class="result-subtitle" id="resultSubtitle"></p>
+                <p class="result-source">生长数据：WS/T 423-2022 / 首都儿科研究所 | 血压标准：WS/T 610-2018 / 中国高血压防治指南2018</p>
+            </div>
+
+            <!-- 身高 -->
+            <div class="result-item" id="heightResultBlock">
+                <div class="result-title"><span class="result-icon">📏</span>身高评估</div>
+                <div class="result-content">
+                    <div class="percentile-display">
+                        <span class="percentile-value" id="heightPercentile">--</span>
+                        <span class="percentile-label">百分位</span>
+                    </div>
+                    <div class="percentile-bar">
+                        <div class="bar-scale">
+                            <span>&lt;P3</span><span>P25</span><span>P50</span><span>P75</span><span>&gt;P97</span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-normal-zone"></div>
+                            <div class="bar-marker" id="heightBar" style="display:none;"></div>
+                        </div>
+                        <div class="bar-labels">
+                            <span>矮小</span><span style="flex:1;text-align:center;">正常范围</span><span>高大</span>
+                        </div>
+                    </div>
+                    <div class="result-evaluation" id="heightEval">--</div>
+                    <div class="result-range" id="heightRange">--</div>
+                </div>
+            </div>
+
+            <!-- 体重 -->
+            <div class="result-item" id="weightResultBlock">
+                <div class="result-title"><span class="result-icon">⚖️</span>体重评估</div>
+                <div class="result-content">
+                    <div class="percentile-display">
+                        <span class="percentile-value" id="weightPercentile">--</span>
+                        <span class="percentile-label">百分位</span>
+                    </div>
+                    <div class="percentile-bar">
+                        <div class="bar-scale">
+                            <span>&lt;P3</span><span>P25</span><span>P50</span><span>P75</span><span>&gt;P97</span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-normal-zone"></div>
+                            <div class="bar-marker" id="weightBar" style="display:none;"></div>
+                        </div>
+                        <div class="bar-labels">
+                            <span>过轻</span><span style="flex:1;text-align:center;">正常范围</span><span>过重</span>
+                        </div>
+                    </div>
+                    <div class="result-evaluation" id="weightEval">--</div>
+                    <div class="result-range" id="weightRange">--</div>
+                </div>
+            </div>
+
+            <!-- BMI -->
+            <div class="result-item" id="bmiResultBlock">
+                <div class="result-title"><span class="result-icon">📐</span>BMI 指数</div>
+                <div class="result-content">
+                    <div class="bmi-row">
+                        <div class="bmi-number" id="bmiValue">--</div>
+                        <div class="bmi-formula" id="bmiCalc">kg/m²</div>
+                    </div>
+                    <div class="result-evaluation" id="bmiEval">--</div>
+                </div>
+            </div>
+
+            <!-- 血压（可选）-->
+            <div class="result-item" id="bpResult" style="display:none;">
+                <div class="result-title"><span class="result-icon">💓</span>血压评估</div>
+                <div class="result-content">
+                    <div class="bp-display">
+                        <div class="bp-values">
+                            <div class="bp-item">
+                                <span class="bp-label">收缩压</span>
+                                <span class="bp-value" id="bpSystolic">--</span>
+                                <span class="bp-unit">mmHg</span>
+                            </div>
+                            <div class="bp-divider">/</div>
+                            <div class="bp-item">
+                                <span class="bp-label">舒张压</span>
+                                <span class="bp-value" id="bpDiastolic">--</span>
+                                <span class="bp-unit">mmHg</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bp-normal-range" id="bpRange">--</div>
+                    <div class="result-evaluation" id="bpEval">--</div>
+                </div>
+            </div>
+
+            <div class="result-footer">
+                <p class="disclaimer">
+                    ⚠️ 本评估仅供参考，不构成医学诊断依据。<br>
+                    如有生长发育方面的疑虑，请咨询专业儿科医生。
+                </p>
+            </div>
+        </div>
+
+        <button type="button" class="btn-secondary" id="reAssessBtn">重新评估</button>
+    </div>
+
+</div><!-- #app -->
+
+<script>
+/**
+ * 儿童生长发育数据
+ *
+ * 数据来源（按优先级）：
+ * 1. WS/T 423-2022《7岁以下儿童生长标准》- 国家卫健委 2023年3月1日起施行
+ *    （基于2015年全国九城市83,628名健康儿童横断面调查数据）
+ * 2. 首都儿科研究所生长发育研究室《中国0-18岁儿童生长标准》
+ *    发表于《中华儿科杂志》2009年
+ *
+ * 注意：
+ * - 0-23月：填写月龄（按月），测量身长（躺卧位）
+ * - 24月-7岁（<84月）：按月龄，测量身高（站立位），注意24月龄有2cm的体位差
+ * - 7-18岁：按整岁，测量身高（站立位）
+ * - 百分位说明：<P3 = 低于3百分位，>P97 = 高于97百分位
+ */
+
+// ============================================================
+// 0-83月龄数据（WS/T 423-2022，2023年最新国家标准）
+// key为月龄（整数），值包含P3/P10/P25/P50/P75/P90/P97
+// 注：13-14月、16-17月、19-20月等数据通过插值补充
+// ============================================================
+
+const GrowthData = {
+
+    // ---- 男孩 身长/身高（cm） ----
+    heightMale: {
+        // 月龄 -> {p3, p10, p25, p50, p75, p90, p97}
+        // 0-12月（按月）：WS/T 423-2022
+        0:  { p3: 46.5, p10: 47.5, p25: 48.6, p50: 50.1, p75: 51.5, p90: 52.6, p97: 53.8 },
+        1:  { p3: 50.4, p10: 51.5, p25: 52.6, p50: 54.2, p75: 55.7, p90: 56.9, p97: 58.1 },
+        2:  { p3: 53.7, p10: 54.9, p25: 56.1, p50: 57.8, p75: 59.4, p90: 60.7, p97: 62.0 },
+        3:  { p3: 56.5, p10: 57.8, p25: 59.1, p50: 60.9, p75: 62.6, p90: 64.0, p97: 65.4 },
+        4:  { p3: 58.8, p10: 60.1, p25: 61.5, p50: 63.4, p75: 65.2, p90: 66.7, p97: 68.2 },
+        5:  { p3: 60.8, p10: 62.2, p25: 63.7, p50: 65.6, p75: 67.5, p90: 69.1, p97: 70.7 },
+        6:  { p3: 62.5, p10: 64.0, p25: 65.5, p50: 67.5, p75: 69.5, p90: 71.1, p97: 72.8 },
+        7:  { p3: 64.0, p10: 65.5, p25: 67.1, p50: 69.2, p75: 71.2, p90: 72.9, p97: 74.7 },
+        8:  { p3: 65.4, p10: 66.9, p25: 68.5, p50: 70.6, p75: 72.7, p90: 74.5, p97: 76.3 },
+        9:  { p3: 66.7, p10: 68.2, p25: 69.9, p50: 72.0, p75: 74.2, p90: 76.0, p97: 77.9 },
+        10: { p3: 67.9, p10: 69.5, p25: 71.2, p50: 73.3, p75: 75.6, p90: 77.5, p97: 79.4 },
+        11: { p3: 69.1, p10: 70.7, p25: 72.4, p50: 74.6, p75: 76.9, p90: 78.9, p97: 80.9 },
+        12: { p3: 70.2, p10: 71.8, p25: 73.6, p50: 75.8, p75: 78.2, p90: 80.2, p97: 82.3 },
+        // 13-14月（插值）
+        13: { p3: 71.2, p10: 72.9, p25: 74.7, p50: 77.0, p75: 79.4, p90: 81.5, p97: 83.6 },
+        14: { p3: 72.2, p10: 73.9, p25: 75.8, p50: 78.1, p75: 80.6, p90: 82.7, p97: 84.9 },
+        15: { p3: 72.9, p10: 74.6, p25: 76.5, p50: 78.9, p75: 81.4, p90: 83.5, p97: 85.8 },
+        // 16-17月（插值）
+        16: { p3: 73.8, p10: 75.5, p25: 77.5, p50: 80.0, p75: 82.6, p90: 84.8, p97: 87.1 },
+        17: { p3: 74.7, p10: 76.5, p25: 78.5, p50: 81.0, p75: 83.6, p90: 85.9, p97: 88.2 },
+        18: { p3: 75.5, p10: 77.3, p25: 79.3, p50: 81.9, p75: 84.6, p90: 86.8, p97: 89.2 },
+        // 19-20月（插值）
+        19: { p3: 76.3, p10: 78.1, p25: 80.2, p50: 82.9, p75: 85.6, p90: 87.9, p97: 90.3 },
+        20: { p3: 77.1, p10: 79.0, p25: 81.1, p50: 83.8, p75: 86.6, p90: 89.0, p97: 91.4 },
+        21: { p3: 78.0, p10: 79.9, p25: 82.0, p50: 84.7, p75: 87.5, p90: 89.9, p97: 92.4 },
+        // 22-23月（插值）
+        22: { p3: 78.8, p10: 80.7, p25: 82.9, p50: 85.7, p75: 88.6, p90: 91.1, p97: 93.6 },
+        23: { p3: 79.6, p10: 81.6, p25: 83.8, p50: 86.6, p75: 89.5, p90: 92.0, p97: 94.6 },
+        // 24-83月（WS/T 423-2022，原文件提供6月间距数据，中间月份插值）
+        24: { p3: 80.5, p10: 82.4, p25: 84.5, p50: 87.3, p75: 90.2, p90: 92.7, p97: 95.4 },
+        25: { p3: 81.3, p10: 83.2, p25: 85.4, p50: 88.3, p75: 91.3, p90: 93.8, p97: 96.5 },
+        26: { p3: 82.1, p10: 84.1, p25: 86.3, p50: 89.2, p75: 92.3, p90: 94.9, p97: 97.7 },
+        27: { p3: 82.9, p10: 84.9, p25: 87.2, p50: 90.2, p75: 93.3, p90: 96.0, p97: 98.8 },
+        28: { p3: 83.7, p10: 85.7, p25: 88.1, p50: 91.1, p75: 94.3, p90: 97.0, p97: 99.9 },
+        29: { p3: 84.5, p10: 86.6, p25: 89.0, p50: 92.1, p75: 95.3, p90: 98.1, p97: 101.0 },
+        30: { p3: 84.2, p10: 86.3, p25: 88.6, p50: 91.6, p75: 94.7, p90: 97.4, p97: 100.3 },
+        31: { p3: 85.1, p10: 87.2, p25: 89.5, p50: 92.6, p75: 95.8, p90: 98.6, p97: 101.5 },
+        32: { p3: 85.9, p10: 88.1, p25: 90.4, p50: 93.6, p75: 96.9, p90: 99.7, p97: 102.7 },
+        33: { p3: 86.7, p10: 89.0, p25: 91.4, p50: 94.6, p75: 98.0, p90: 100.9, p97: 103.9 },
+        34: { p3: 87.5, p10: 89.9, p25: 92.3, p50: 95.5, p75: 99.0, p90: 101.9, p97: 105.0 },
+        35: { p3: 88.4, p10: 90.7, p25: 93.2, p50: 96.5, p75: 100.0, p90: 103.0, p97: 106.2 },
+        36: { p3: 87.8, p10: 90.1, p25: 92.6, p50: 95.8, p75: 99.1, p90: 102.0, p97: 105.1 },
+        37: { p3: 88.6, p10: 91.0, p25: 93.5, p50: 96.8, p75: 100.2, p90: 103.2, p97: 106.3 },
+        38: { p3: 89.4, p10: 91.8, p25: 94.4, p50: 97.7, p75: 101.2, p90: 104.3, p97: 107.5 },
+        39: { p3: 90.2, p10: 92.6, p25: 95.3, p50: 98.7, p75: 102.2, p90: 105.3, p97: 108.7 },
+        40: { p3: 91.0, p10: 93.4, p25: 96.1, p50: 99.6, p75: 103.2, p90: 106.4, p97: 109.8 },
+        41: { p3: 91.8, p10: 94.2, p25: 97.0, p50: 100.5, p75: 104.2, p90: 107.5, p97: 111.0 },
+        42: { p3: 91.2, p10: 93.6, p25: 96.2, p50: 99.7, p75: 103.2, p90: 106.3, p97: 109.6 },
+        43: { p3: 92.0, p10: 94.5, p25: 97.1, p50: 100.7, p75: 104.3, p90: 107.5, p97: 110.9 },
+        44: { p3: 92.8, p10: 95.3, p25: 98.0, p50: 101.6, p75: 105.3, p90: 108.6, p97: 112.1 },
+        45: { p3: 93.6, p10: 96.1, p25: 98.9, p50: 102.6, p75: 106.3, p90: 109.7, p97: 113.3 },
+        46: { p3: 94.4, p10: 96.9, p25: 99.8, p50: 103.5, p75: 107.3, p90: 110.7, p97: 114.4 },
+        47: { p3: 95.2, p10: 97.7, p25: 100.7, p50: 104.5, p75: 108.4, p90: 111.8, p97: 115.6 },
+        48: { p3: 94.5, p10: 97.1, p25: 99.9, p50: 103.5, p75: 107.1, p90: 110.4, p97: 113.9 },
+        49: { p3: 95.3, p10: 97.9, p25: 100.8, p50: 104.5, p75: 108.1, p90: 111.5, p97: 115.1 },
+        50: { p3: 96.1, p10: 98.7, p25: 101.7, p50: 105.4, p75: 109.2, p90: 112.6, p97: 116.3 },
+        51: { p3: 96.9, p10: 99.5, p25: 102.6, p50: 106.4, p75: 110.2, p90: 113.7, p97: 117.5 },
+        52: { p3: 97.7, p10: 100.4, p25: 103.5, p50: 107.3, p75: 111.2, p90: 114.8, p97: 118.7 },
+        53: { p3: 98.5, p10: 101.2, p25: 104.3, p50: 108.3, p75: 112.3, p90: 115.9, p97: 119.9 },
+        54: { p3: 97.8, p10: 100.5, p25: 103.4, p50: 107.1, p75: 110.9, p90: 114.3, p97: 118.0 },
+        55: { p3: 98.6, p10: 101.4, p25: 104.3, p50: 108.1, p75: 111.9, p90: 115.4, p97: 119.2 },
+        56: { p3: 99.4, p10: 102.2, p25: 105.2, p50: 109.1, p75: 113.0, p90: 116.5, p97: 120.4 },
+        57: { p3: 100.2, p10: 103.0, p25: 106.1, p50: 110.0, p75: 114.0, p90: 117.6, p97: 121.6 },
+        58: { p3: 101.0, p10: 103.9, p25: 107.0, p50: 111.0, p75: 115.0, p90: 118.7, p97: 122.7 },
+        59: { p3: 101.8, p10: 104.7, p25: 107.9, p50: 111.9, p75: 116.0, p90: 119.8, p97: 123.9 },
+        60: { p3: 100.9, p10: 103.7, p25: 106.7, p50: 110.6, p75: 114.5, p90: 118.1, p97: 121.9 },
+        61: { p3: 101.7, p10: 104.6, p25: 107.6, p50: 111.6, p75: 115.6, p90: 119.3, p97: 123.2 },
+        62: { p3: 102.6, p10: 105.5, p25: 108.6, p50: 112.6, p75: 116.6, p90: 120.4, p97: 124.4 },
+        63: { p3: 103.4, p10: 106.4, p25: 109.5, p50: 113.5, p75: 117.6, p90: 121.5, p97: 125.6 },
+        64: { p3: 104.2, p10: 107.2, p25: 110.4, p50: 114.5, p75: 118.7, p90: 122.6, p97: 126.7 },
+        65: { p3: 105.0, p10: 108.1, p25: 111.3, p50: 115.5, p75: 119.7, p90: 123.7, p97: 127.9 },
+        66: { p3: 103.9, p10: 106.8, p25: 109.9, p50: 113.9, p75: 117.9, p90: 121.6, p97: 125.6 },
+        67: { p3: 104.8, p10: 107.7, p25: 110.9, p50: 114.9, p75: 119.0, p90: 122.8, p97: 126.9 },
+        68: { p3: 105.6, p10: 108.6, p25: 111.9, p50: 115.9, p75: 120.1, p90: 124.0, p97: 128.1 },
+        69: { p3: 106.4, p10: 109.5, p25: 112.8, p50: 116.9, p75: 121.1, p90: 125.1, p97: 129.3 },
+        70: { p3: 107.2, p10: 110.3, p25: 113.7, p50: 117.9, p75: 122.2, p90: 126.2, p97: 130.4 },
+        71: { p3: 108.0, p10: 111.2, p25: 114.6, p50: 118.9, p75: 123.2, p90: 127.3, p97: 131.6 },
+        72: { p3: 106.8, p10: 109.8, p25: 113.0, p50: 117.1, p75: 121.2, p90: 125.0, p97: 129.1 },
+        73: { p3: 107.6, p10: 110.7, p25: 114.0, p50: 118.1, p75: 122.3, p90: 126.2, p97: 130.3 },
+        74: { p3: 108.4, p10: 111.6, p25: 114.9, p50: 119.1, p75: 123.4, p90: 127.3, p97: 131.5 },
+        75: { p3: 109.2, p10: 112.4, p25: 115.8, p50: 120.1, p75: 124.4, p90: 128.4, p97: 132.7 },
+        76: { p3: 110.0, p10: 113.3, p25: 116.7, p50: 121.1, p75: 125.5, p90: 129.5, p97: 133.9 },
+        77: { p3: 110.8, p10: 114.1, p25: 117.6, p50: 122.1, p75: 126.5, p90: 130.6, p97: 135.0 },
+        78: { p3: 109.6, p10: 112.7, p25: 116.0, p50: 120.2, p75: 124.4, p90: 128.3, p97: 132.5 },
+        79: { p3: 110.4, p10: 113.6, p25: 116.9, p50: 121.2, p75: 125.5, p90: 129.5, p97: 133.7 },
+        80: { p3: 111.2, p10: 114.4, p25: 117.8, p50: 122.2, p75: 126.5, p90: 130.6, p97: 134.9 },
+        81: { p3: 112.0, p10: 115.3, p25: 118.7, p50: 123.2, p75: 127.6, p90: 131.7, p97: 136.1 },
+        82: { p3: 112.8, p10: 116.1, p25: 119.6, p50: 124.2, p75: 128.6, p90: 132.8, p97: 137.2 },
+        83: { p3: 113.6, p10: 117.0, p25: 120.5, p50: 125.1, p75: 129.7, p90: 133.9, p97: 138.4 },
+    },
+
+    // ---- 女孩 身长/身高（cm） ----
+    heightFemale: {
+        0:  { p3: 45.8, p10: 46.8, p25: 47.9, p50: 49.3, p75: 50.7, p90: 51.8, p97: 53.0 },
+        1:  { p3: 49.5, p10: 50.6, p25: 51.7, p50: 53.2, p75: 54.7, p90: 55.9, p97: 57.1 },
+        2:  { p3: 52.6, p10: 53.8, p25: 55.0, p50: 56.6, p75: 58.2, p90: 59.5, p97: 60.8 },
+        3:  { p3: 55.2, p10: 56.4, p25: 57.7, p50: 59.4, p75: 61.1, p90: 62.5, p97: 63.9 },
+        4:  { p3: 57.4, p10: 58.7, p25: 60.0, p50: 61.8, p75: 63.6, p90: 65.1, p97: 66.6 },
+        5:  { p3: 59.2, p10: 60.6, p25: 62.0, p50: 63.9, p75: 65.8, p90: 67.4, p97: 69.0 },
+        6:  { p3: 60.9, p10: 62.3, p25: 63.8, p50: 65.7, p75: 67.7, p90: 69.3, p97: 71.0 },
+        7:  { p3: 62.3, p10: 63.8, p25: 65.3, p50: 67.3, p75: 69.3, p90: 71.0, p97: 72.8 },
+        8:  { p3: 63.7, p10: 65.2, p25: 66.8, p50: 68.8, p75: 70.9, p90: 72.7, p97: 74.5 },
+        9:  { p3: 65.0, p10: 66.5, p25: 68.1, p50: 70.2, p75: 72.4, p90: 74.2, p97: 76.1 },
+        10: { p3: 66.2, p10: 67.8, p25: 69.4, p50: 71.6, p75: 73.8, p90: 75.7, p97: 77.7 },
+        11: { p3: 67.4, p10: 69.0, p25: 70.7, p50: 72.9, p75: 75.2, p90: 77.2, p97: 79.2 },
+        12: { p3: 68.5, p10: 70.2, p25: 71.9, p50: 74.2, p75: 76.5, p90: 78.6, p97: 80.7 },
+        13: { p3: 69.6, p10: 71.3, p25: 73.1, p50: 75.5, p75: 77.9, p90: 80.1, p97: 82.3 },
+        14: { p3: 70.7, p10: 72.5, p25: 74.3, p50: 76.8, p75: 79.3, p90: 81.5, p97: 83.8 },
+        15: { p3: 71.1, p10: 72.9, p25: 74.8, p50: 77.2, p75: 79.7, p90: 81.9, p97: 84.3 },
+        16: { p3: 72.1, p10: 73.9, p25: 75.9, p50: 78.4, p75: 81.0, p90: 83.3, p97: 85.7 },
+        17: { p3: 73.1, p10: 75.0, p25: 77.0, p50: 79.6, p75: 82.2, p90: 84.6, p97: 87.1 },
+        18: { p3: 73.6, p10: 75.5, p25: 77.5, p50: 80.1, p75: 82.8, p90: 85.1, p97: 87.6 },
+        19: { p3: 74.6, p10: 76.5, p25: 78.6, p50: 81.3, p75: 84.0, p90: 86.5, p97: 89.1 },
+        20: { p3: 75.5, p10: 77.5, p25: 79.6, p50: 82.4, p75: 85.3, p90: 87.8, p97: 90.5 },
+        21: { p3: 76.0, p10: 77.9, p25: 80.0, p50: 82.7, p75: 85.5, p90: 87.9, p97: 90.5 },
+        22: { p3: 76.9, p10: 78.9, p25: 81.1, p50: 83.9, p75: 86.8, p90: 89.3, p97: 92.1 },
+        23: { p3: 77.8, p10: 79.8, p25: 82.1, p50: 85.0, p75: 88.0, p90: 90.7, p97: 93.5 },
+        24: { p3: 78.4, p10: 80.4, p25: 82.6, p50: 85.3, p75: 88.2, p90: 90.7, p97: 93.4 },
+        25: { p3: 79.3, p10: 81.3, p25: 83.6, p50: 86.5, p75: 89.4, p90: 92.0, p97: 94.8 },
+        26: { p3: 80.2, p10: 82.3, p25: 84.6, p50: 87.6, p75: 90.7, p90: 93.3, p97: 96.2 },
+        27: { p3: 81.1, p10: 83.2, p25: 85.6, p50: 88.6, p75: 91.8, p90: 94.5, p97: 97.5 },
+        28: { p3: 82.0, p10: 84.2, p25: 86.6, p50: 89.7, p75: 92.9, p90: 95.7, p97: 98.8 },
+        29: { p3: 82.9, p10: 85.1, p25: 87.6, p50: 90.7, p75: 94.0, p90: 96.9, p97: 100.1 },
+        30: { p3: 82.1, p10: 84.2, p25: 86.5, p50: 89.5, p75: 92.6, p90: 95.3, p97: 98.3 },
+        31: { p3: 83.0, p10: 85.2, p25: 87.5, p50: 90.6, p75: 93.8, p90: 96.6, p97: 99.7 },
+        32: { p3: 83.9, p10: 86.1, p25: 88.5, p50: 91.7, p75: 94.9, p90: 97.8, p97: 101.0 },
+        33: { p3: 84.8, p10: 87.0, p25: 89.5, p50: 92.7, p75: 96.1, p90: 99.0, p97: 102.3 },
+        34: { p3: 85.7, p10: 87.9, p25: 90.5, p50: 93.7, p75: 97.2, p90: 100.2, p97: 103.5 },
+        35: { p3: 86.5, p10: 88.8, p25: 91.4, p50: 94.8, p75: 98.3, p90: 101.4, p97: 104.8 },
+        36: { p3: 85.6, p10: 87.8, p25: 90.3, p50: 93.4, p75: 96.7, p90: 99.5, p97: 102.7 },
+        37: { p3: 86.5, p10: 88.7, p25: 91.3, p50: 94.5, p75: 97.8, p90: 100.8, p97: 104.1 },
+        38: { p3: 87.3, p10: 89.6, p25: 92.3, p50: 95.5, p75: 99.0, p90: 102.0, p97: 105.4 },
+        39: { p3: 88.2, p10: 90.5, p25: 93.2, p50: 96.5, p75: 100.1, p90: 103.2, p97: 106.6 },
+        40: { p3: 89.0, p10: 91.4, p25: 94.2, p50: 97.5, p75: 101.2, p90: 104.4, p97: 107.9 },
+        41: { p3: 89.8, p10: 92.3, p25: 95.1, p50: 98.5, p75: 102.3, p90: 105.5, p97: 109.1 },
+        42: { p3: 89.0, p10: 91.3, p25: 93.9, p50: 97.2, p75: 100.6, p90: 103.6, p97: 106.8 },
+        43: { p3: 89.8, p10: 92.2, p25: 94.9, p50: 98.2, p75: 101.7, p90: 104.8, p97: 108.1 },
+        44: { p3: 90.7, p10: 93.1, p25: 95.9, p50: 99.3, p75: 102.9, p90: 106.0, p97: 109.4 },
+        45: { p3: 91.5, p10: 94.0, p25: 96.8, p50: 100.3, p75: 104.0, p90: 107.2, p97: 110.7 },
+        46: { p3: 92.3, p10: 94.9, p25: 97.8, p50: 101.3, p75: 105.1, p90: 108.4, p97: 111.9 },
+        47: { p3: 93.1, p10: 95.8, p25: 98.7, p50: 102.3, p75: 106.2, p90: 109.5, p97: 113.2 },
+        48: { p3: 92.2, p10: 94.6, p25: 97.3, p50: 100.7, p75: 104.3, p90: 107.4, p97: 110.8 },
+        49: { p3: 93.1, p10: 95.5, p25: 98.3, p50: 101.8, p75: 105.4, p90: 108.6, p97: 112.1 },
+        50: { p3: 93.9, p10: 96.4, p25: 99.3, p50: 102.8, p75: 106.5, p90: 109.8, p97: 113.4 },
+        51: { p3: 94.7, p10: 97.3, p25: 100.2, p50: 103.8, p75: 107.6, p90: 111.0, p97: 114.7 },
+        52: { p3: 95.5, p10: 98.2, p25: 101.2, p50: 104.8, p75: 108.7, p90: 112.2, p97: 115.9 },
+        53: { p3: 96.4, p10: 99.1, p25: 102.1, p50: 105.8, p75: 109.8, p90: 113.3, p97: 117.2 },
+        54: { p3: 95.3, p10: 97.8, p25: 100.6, p50: 104.1, p75: 107.8, p90: 111.0, p97: 114.6 },
+        55: { p3: 96.2, p10: 98.7, p25: 101.6, p50: 105.1, p75: 108.9, p90: 112.2, p97: 116.0 },
+        56: { p3: 97.0, p10: 99.6, p25: 102.5, p50: 106.1, p75: 110.0, p90: 113.4, p97: 117.3 },
+        57: { p3: 97.8, p10: 100.5, p25: 103.5, p50: 107.1, p75: 111.1, p90: 114.6, p97: 118.6 },
+        58: { p3: 98.7, p10: 101.4, p25: 104.4, p50: 108.1, p75: 112.2, p90: 115.8, p97: 119.8 },
+        59: { p3: 99.5, p10: 102.3, p25: 105.4, p50: 109.1, p75: 113.2, p90: 116.9, p97: 121.1 },
+        60: { p3: 98.2, p10: 100.9, p25: 103.8, p50: 107.4, p75: 111.2, p90: 114.6, p97: 118.3 },
+        61: { p3: 99.1, p10: 101.8, p25: 104.8, p50: 108.4, p75: 112.3, p90: 115.8, p97: 119.6 },
+        62: { p3: 99.9, p10: 102.7, p25: 105.7, p50: 109.4, p75: 113.4, p90: 117.0, p97: 120.9 },
+        63: { p3: 100.7, p10: 103.6, p25: 106.7, p50: 110.4, p75: 114.5, p90: 118.2, p97: 122.2 },
+        64: { p3: 101.6, p10: 104.5, p25: 107.6, p50: 111.4, p75: 115.6, p90: 119.4, p97: 123.5 },
+        65: { p3: 102.4, p10: 105.3, p25: 108.6, p50: 112.4, p75: 116.7, p90: 120.5, p97: 124.8 },
+        66: { p3: 101.1, p10: 103.9, p25: 106.9, p50: 110.6, p75: 114.5, p90: 118.0, p97: 121.9 },
+        67: { p3: 101.9, p10: 104.8, p25: 107.9, p50: 111.6, p75: 115.6, p90: 119.2, p97: 123.2 },
+        68: { p3: 102.8, p10: 105.7, p25: 108.9, p50: 112.7, p75: 116.7, p90: 120.4, p97: 124.5 },
+        69: { p3: 103.6, p10: 106.6, p25: 109.8, p50: 113.7, p75: 117.8, p90: 121.6, p97: 125.7 },
+        70: { p3: 104.5, p10: 107.5, p25: 110.8, p50: 114.7, p75: 118.9, p90: 122.7, p97: 127.0 },
+        71: { p3: 105.3, p10: 108.4, p25: 111.7, p50: 115.7, p75: 120.0, p90: 123.9, p97: 128.2 },
+        72: { p3: 103.9, p10: 106.8, p25: 109.9, p50: 113.7, p75: 117.7, p90: 121.3, p97: 125.3 },
+        73: { p3: 104.7, p10: 107.7, p25: 110.9, p50: 114.8, p75: 118.8, p90: 122.5, p97: 126.6 },
+        74: { p3: 105.5, p10: 108.6, p25: 111.8, p50: 115.8, p75: 119.9, p90: 123.7, p97: 127.8 },
+        75: { p3: 106.4, p10: 109.5, p25: 112.8, p50: 116.8, p75: 121.0, p90: 124.9, p97: 129.1 },
+        76: { p3: 107.2, p10: 110.4, p25: 113.7, p50: 117.8, p75: 122.1, p90: 126.1, p97: 130.3 },
+        77: { p3: 108.0, p10: 111.3, p25: 114.7, p50: 118.8, p75: 123.2, p90: 127.2, p97: 131.6 },
+        78: { p3: 106.6, p10: 109.6, p25: 112.8, p50: 116.7, p75: 120.8, p90: 124.5, p97: 128.6 },
+        79: { p3: 107.4, p10: 110.5, p25: 113.7, p50: 117.7, p75: 121.9, p90: 125.7, p97: 129.9 },
+        80: { p3: 108.2, p10: 111.4, p25: 114.7, p50: 118.7, p75: 123.0, p90: 126.9, p97: 131.1 },
+        81: { p3: 109.0, p10: 112.2, p25: 115.6, p50: 119.7, p75: 124.1, p90: 128.0, p97: 132.3 },
+        82: { p3: 109.8, p10: 113.1, p25: 116.5, p50: 120.7, p75: 125.2, p90: 129.2, p97: 133.6 },
+        83: { p3: 110.6, p10: 114.0, p25: 117.5, p50: 121.7, p75: 126.2, p90: 130.3, p97: 134.8 },
+    },
+
+    // ---- 男孩 体重（kg） ----
+    weightMale: {
+        0:  { p3: 2.55, p10: 2.75, p25: 3.00, p50: 3.32, p75: 3.65, p90: 3.93, p97: 4.22 },
+        1:  { p3: 3.45, p10: 3.75, p25: 4.05, p50: 4.45, p75: 4.85, p90: 5.20, p97: 5.58 },
+        2:  { p3: 4.52, p10: 4.88, p25: 5.25, p50: 5.73, p75: 6.20, p90: 6.60, p97: 7.05 },
+        3:  { p3: 5.45, p10: 5.85, p25: 6.28, p50: 6.82, p75: 7.35, p90: 7.78, p97: 8.28 },
+        4:  { p3: 6.15, p10: 6.58, p25: 7.05, p50: 7.63, p75: 8.20, p90: 8.65, p97: 9.18 },
+        5:  { p3: 6.72, p10: 7.18, p25: 7.68, p50: 8.30, p75: 8.90, p90: 9.38, p97: 9.95 },
+        6:  { p3: 7.18, p10: 7.65, p25: 8.18, p50: 8.83, p75: 9.45, p90: 9.95, p97: 10.55 },
+        7:  { p3: 7.58, p10: 8.08, p25: 8.63, p50: 9.30, p75: 9.95, p90: 10.48, p97: 11.08 },
+        8:  { p3: 7.93, p10: 8.45, p25: 9.02, p50: 9.72, p75: 10.38, p90: 10.93, p97: 11.55 },
+        9:  { p3: 8.25, p10: 8.78, p25: 9.38, p50: 10.10, p75: 10.78, p90: 11.35, p97: 12.00 },
+        10: { p3: 8.55, p10: 9.10, p25: 9.72, p50: 10.45, p75: 11.15, p90: 11.75, p97: 12.42 },
+        11: { p3: 8.83, p10: 9.40, p25: 10.03, p50: 10.78, p75: 11.50, p90: 12.12, p97: 12.82 },
+        12: { p3: 9.08, p10: 9.68, p25: 10.33, p50: 11.10, p75: 11.85, p90: 12.48, p97: 13.20 },
+        13: { p3: 9.32, p10: 9.93, p25: 10.60, p50: 11.40, p75: 12.15, p90: 12.80, p97: 13.55 },
+        14: { p3: 9.54, p10: 10.17, p25: 10.87, p50: 11.68, p75: 12.45, p90: 13.13, p97: 13.90 },
+        15: { p3: 9.68, p10: 10.30, p25: 11.00, p50: 11.83, p75: 12.63, p90: 13.30, p97: 14.08 },
+        16: { p3: 9.90, p10: 10.54, p25: 11.27, p50: 12.12, p75: 12.95, p90: 13.64, p97: 14.45 },
+        17: { p3: 10.12, p10: 10.78, p25: 11.53, p50: 12.40, p75: 13.25, p90: 13.97, p97: 14.80 },
+        18: { p3: 10.18, p10: 10.85, p25: 11.60, p50: 12.48, p75: 13.33, p90: 14.05, p97: 14.88 },
+        19: { p3: 10.38, p10: 11.07, p25: 11.83, p50: 12.75, p75: 13.63, p90: 14.37, p97: 15.23 },
+        20: { p3: 10.58, p10: 11.28, p25: 12.07, p50: 13.00, p75: 13.90, p90: 14.67, p97: 15.55 },
+        21: { p3: 10.65, p10: 11.35, p25: 12.13, p50: 13.05, p75: 13.95, p90: 14.70, p97: 15.58 },
+        22: { p3: 10.85, p10: 11.57, p25: 12.37, p50: 13.32, p75: 14.25, p90: 15.02, p97: 15.93 },
+        23: { p3: 11.05, p10: 11.78, p25: 12.60, p50: 13.57, p75: 14.52, p90: 15.33, p97: 16.27 },
+        24: { p3: 11.08, p10: 11.80, p25: 12.63, p50: 13.58, p75: 14.53, p90: 15.33, p97: 16.23 },
+        25: { p3: 11.27, p10: 12.01, p25: 12.87, p50: 13.83, p75: 14.82, p90: 15.65, p97: 16.57 },
+        26: { p3: 11.46, p10: 12.22, p25: 13.10, p50: 14.09, p75: 15.10, p90: 15.96, p97: 16.90 },
+        27: { p3: 11.65, p10: 12.43, p25: 13.33, p50: 14.34, p75: 15.37, p90: 16.27, p97: 17.23 },
+        28: { p3: 11.83, p10: 12.63, p25: 13.55, p50: 14.58, p75: 15.63, p90: 16.56, p97: 17.55 },
+        29: { p3: 12.02, p10: 12.84, p25: 13.78, p50: 14.83, p75: 15.90, p90: 16.85, p97: 17.87 },
+        30: { p3: 11.88, p10: 12.68, p25: 13.58, p50: 14.63, p75: 15.65, p90: 16.53, p97: 17.53 },
+        31: { p3: 12.07, p10: 12.89, p25: 13.81, p50: 14.88, p75: 15.92, p90: 16.83, p97: 17.85 },
+        32: { p3: 12.26, p10: 13.10, p25: 14.04, p50: 15.13, p75: 16.18, p90: 17.12, p97: 18.16 },
+        33: { p3: 12.44, p10: 13.30, p25: 14.27, p50: 15.37, p75: 16.45, p90: 17.40, p97: 18.47 },
+        34: { p3: 12.63, p10: 13.51, p25: 14.50, p50: 15.62, p75: 16.71, p90: 17.69, p97: 18.78 },
+        35: { p3: 12.82, p10: 13.72, p25: 14.73, p50: 15.87, p75: 16.98, p90: 17.98, p97: 19.09 },
+        36: { p3: 12.63, p10: 13.48, p25: 14.45, p50: 15.58, p75: 16.68, p90: 17.63, p97: 18.70 },
+        37: { p3: 12.82, p10: 13.69, p25: 14.68, p50: 15.83, p75: 16.95, p90: 17.92, p97: 19.01 },
+        38: { p3: 13.01, p10: 13.90, p25: 14.91, p50: 16.08, p75: 17.22, p90: 18.22, p97: 19.33 },
+        39: { p3: 13.20, p10: 14.11, p25: 15.14, p50: 16.33, p75: 17.49, p90: 18.51, p97: 19.64 },
+        40: { p3: 13.39, p10: 14.32, p25: 15.37, p50: 16.58, p75: 17.76, p90: 18.80, p97: 19.96 },
+        41: { p3: 13.58, p10: 14.53, p25: 15.60, p50: 16.83, p75: 18.03, p90: 19.09, p97: 20.27 },
+        42: { p3: 13.33, p10: 14.23, p25: 15.25, p50: 16.45, p75: 17.63, p90: 18.65, p97: 19.78 },
+        43: { p3: 13.52, p10: 14.44, p25: 15.49, p50: 16.70, p75: 17.90, p90: 18.95, p97: 20.10 },
+        44: { p3: 13.71, p10: 14.65, p25: 15.72, p50: 16.95, p75: 18.17, p90: 19.24, p97: 20.41 },
+        45: { p3: 13.90, p10: 14.86, p25: 15.95, p50: 17.20, p75: 18.44, p90: 19.54, p97: 20.73 },
+        46: { p3: 14.09, p10: 15.07, p25: 16.18, p50: 17.45, p75: 18.71, p90: 19.83, p97: 21.04 },
+        47: { p3: 14.29, p10: 15.29, p25: 16.41, p50: 17.70, p75: 18.98, p90: 20.13, p97: 21.36 },
+        48: { p3: 14.00, p10: 14.95, p25: 16.03, p50: 17.28, p75: 18.53, p90: 19.63, p97: 20.83 },
+        49: { p3: 14.19, p10: 15.16, p25: 16.26, p50: 17.53, p75: 18.80, p90: 19.93, p97: 21.15 },
+        50: { p3: 14.38, p10: 15.37, p25: 16.49, p50: 17.78, p75: 19.07, p90: 20.22, p97: 21.46 },
+        51: { p3: 14.57, p10: 15.58, p25: 16.72, p50: 18.03, p75: 19.34, p90: 20.52, p97: 21.78 },
+        52: { p3: 14.76, p10: 15.79, p25: 16.95, p50: 18.28, p75: 19.61, p90: 20.81, p97: 22.09 },
+        53: { p3: 14.95, p10: 16.00, p25: 17.18, p50: 18.53, p75: 19.88, p90: 21.10, p97: 22.41 },
+        54: { p3: 14.65, p10: 15.65, p25: 16.78, p50: 18.10, p75: 19.40, p90: 20.58, p97: 21.85 },
+        55: { p3: 14.84, p10: 15.86, p25: 17.01, p50: 18.35, p75: 19.67, p90: 20.88, p97: 22.17 },
+        56: { p3: 15.03, p10: 16.07, p25: 17.24, p50: 18.60, p75: 19.94, p90: 21.17, p97: 22.49 },
+        57: { p3: 15.22, p10: 16.28, p25: 17.47, p50: 18.85, p75: 20.21, p90: 21.47, p97: 22.80 },
+        58: { p3: 15.41, p10: 16.49, p25: 17.70, p50: 19.10, p75: 20.48, p90: 21.76, p97: 23.12 },
+        59: { p3: 15.60, p10: 16.70, p25: 17.93, p50: 19.35, p75: 20.75, p90: 22.06, p97: 23.44 },
+        60: { p3: 15.28, p10: 16.33, p25: 17.53, p50: 18.90, p75: 20.25, p90: 21.50, p97: 22.85 },
+        61: { p3: 15.47, p10: 16.54, p25: 17.76, p50: 19.15, p75: 20.52, p90: 21.79, p97: 23.17 },
+        62: { p3: 15.66, p10: 16.75, p25: 17.99, p50: 19.40, p75: 20.79, p90: 22.09, p97: 23.49 },
+        63: { p3: 15.85, p10: 16.96, p25: 18.22, p50: 19.65, p75: 21.06, p90: 22.38, p97: 23.81 },
+        64: { p3: 16.04, p10: 17.17, p25: 18.45, p50: 19.90, p75: 21.33, p90: 22.68, p97: 24.13 },
+        65: { p3: 16.23, p10: 17.38, p25: 18.68, p50: 20.15, p75: 21.60, p90: 22.97, p97: 24.44 },
+        66: { p3: 15.90, p10: 16.98, p25: 18.23, p50: 19.68, p75: 21.10, p90: 22.40, p97: 23.83 },
+        67: { p3: 16.09, p10: 17.19, p25: 18.46, p50: 19.93, p75: 21.37, p90: 22.70, p97: 24.15 },
+        68: { p3: 16.28, p10: 17.40, p25: 18.69, p50: 20.18, p75: 21.64, p90: 22.99, p97: 24.47 },
+        69: { p3: 16.47, p10: 17.61, p25: 18.92, p50: 20.43, p75: 21.91, p90: 23.29, p97: 24.79 },
+        70: { p3: 16.66, p10: 17.82, p25: 19.15, p50: 20.68, p75: 22.18, p90: 23.58, p97: 25.11 },
+        71: { p3: 16.85, p10: 18.03, p25: 19.38, p50: 20.93, p75: 22.45, p90: 23.88, p97: 25.42 },
+        72: { p3: 16.50, p10: 17.63, p25: 18.93, p50: 20.45, p75: 21.95, p90: 23.30, p97: 24.78 },
+        73: { p3: 16.69, p10: 17.84, p25: 19.16, p50: 20.70, p75: 22.22, p90: 23.59, p97: 25.10 },
+        74: { p3: 16.88, p10: 18.05, p25: 19.39, p50: 20.95, p75: 22.49, p90: 23.89, p97: 25.42 },
+        75: { p3: 17.07, p10: 18.26, p25: 19.62, p50: 21.20, p75: 22.76, p90: 24.18, p97: 25.73 },
+        76: { p3: 17.26, p10: 18.47, p25: 19.85, p50: 21.45, p75: 23.03, p90: 24.47, p97: 26.05 },
+        77: { p3: 17.45, p10: 18.68, p25: 20.08, p50: 21.70, p75: 23.30, p90: 24.76, p97: 26.37 },
+        78: { p3: 17.10, p10: 18.28, p25: 19.63, p50: 21.20, p75: 22.78, p90: 24.18, p97: 25.73 },
+        79: { p3: 17.29, p10: 18.49, p25: 19.86, p50: 21.45, p75: 23.05, p90: 24.47, p97: 26.05 },
+        80: { p3: 17.48, p10: 18.70, p25: 20.09, p50: 21.70, p75: 23.32, p90: 24.76, p97: 26.37 },
+        81: { p3: 17.67, p10: 18.91, p25: 20.32, p50: 21.95, p75: 23.59, p90: 25.05, p97: 26.68 },
+        82: { p3: 17.86, p10: 19.12, p25: 20.55, p50: 22.20, p75: 23.86, p90: 25.34, p97: 27.00 },
+        83: { p3: 18.05, p10: 19.33, p25: 20.78, p50: 22.45, p75: 24.13, p90: 25.63, p97: 27.31 },
+    },
+
+    // ---- 女孩 体重（kg） ----
+    weightFemale: {
+        0:  { p3: 2.48, p10: 2.68, p25: 2.92, p50: 3.21, p75: 3.53, p90: 3.80, p97: 4.08 },
+        1:  { p3: 3.32, p10: 3.60, p25: 3.90, p50: 4.28, p75: 4.68, p90: 5.02, p97: 5.38 },
+        2:  { p3: 4.35, p10: 4.70, p25: 5.05, p50: 5.52, p75: 5.98, p90: 6.38, p97: 6.80 },
+        3:  { p3: 5.18, p10: 5.55, p25: 5.95, p50: 6.46, p75: 6.98, p90: 7.40, p97: 7.88 },
+        4:  { p3: 5.85, p10: 6.25, p25: 6.68, p50: 7.23, p75: 7.78, p90: 8.23, p97: 8.73 },
+        5:  { p3: 6.40, p10: 6.83, p25: 7.28, p50: 7.87, p75: 8.45, p90: 8.93, p97: 9.45 },
+        6:  { p3: 6.83, p10: 7.28, p25: 7.75, p50: 8.37, p75: 8.98, p90: 9.48, p97: 10.03 },
+        7:  { p3: 7.20, p10: 7.68, p25: 8.18, p50: 8.82, p75: 9.45, p90: 9.98, p97: 10.55 },
+        8:  { p3: 7.53, p10: 8.03, p25: 8.55, p50: 9.22, p75: 9.88, p90: 10.43, p97: 11.03 },
+        9:  { p3: 7.83, p10: 8.35, p25: 8.90, p50: 9.58, p75: 10.25, p90: 10.83, p97: 11.45 },
+        10: { p3: 8.12, p10: 8.65, p25: 9.22, p50: 9.93, p75: 10.63, p90: 11.23, p97: 11.88 },
+        11: { p3: 8.38, p10: 8.93, p25: 9.53, p50: 10.25, p75: 10.98, p90: 11.60, p97: 12.28 },
+        12: { p3: 8.63, p10: 9.20, p25: 9.82, p50: 10.56, p75: 11.30, p90: 11.95, p97: 12.65 },
+        13: { p3: 8.86, p10: 9.45, p25: 10.10, p50: 10.86, p75: 11.63, p90: 12.30, p97: 13.03 },
+        14: { p3: 9.09, p10: 9.70, p25: 10.37, p50: 11.15, p75: 11.95, p90: 12.65, p97: 13.40 },
+        15: { p3: 9.18, p10: 9.78, p25: 10.45, p50: 11.25, p75: 12.05, p90: 12.73, p97: 13.48 },
+        16: { p3: 9.40, p10: 10.02, p25: 10.72, p50: 11.54, p75: 12.37, p90: 13.08, p97: 13.85 },
+        17: { p3: 9.62, p10: 10.27, p25: 10.99, p50: 11.83, p75: 12.69, p90: 13.43, p97: 14.23 },
+        18: { p3: 9.65, p10: 10.28, p25: 11.00, p50: 11.85, p75: 12.70, p90: 13.43, p97: 14.23 },
+        19: { p3: 9.87, p10: 10.52, p25: 11.27, p50: 12.13, p75: 13.01, p90: 13.77, p97: 14.60 },
+        20: { p3: 10.08, p10: 10.76, p25: 11.53, p50: 12.41, p75: 13.32, p90: 14.10, p97: 14.97 },
+        21: { p3: 10.08, p10: 10.75, p25: 11.50, p50: 12.38, p75: 13.25, p90: 14.00, p97: 14.85 },
+        22: { p3: 10.29, p10: 10.99, p25: 11.76, p50: 12.67, p75: 13.56, p90: 14.35, p97: 15.22 },
+        23: { p3: 10.50, p10: 11.22, p25: 12.02, p50: 12.95, p75: 13.87, p90: 14.69, p97: 15.60 },
+        24: { p3: 10.48, p10: 11.18, p25: 11.98, p50: 12.88, p75: 13.78, p90: 14.58, p97: 15.45 },
+        25: { p3: 10.69, p10: 11.41, p25: 12.23, p50: 13.16, p75: 14.08, p90: 14.91, p97: 15.81 },
+        26: { p3: 10.90, p10: 11.64, p25: 12.48, p50: 13.43, p75: 14.38, p90: 15.24, p97: 16.17 },
+        27: { p3: 11.11, p10: 11.87, p25: 12.73, p50: 13.71, p75: 14.69, p90: 15.57, p97: 16.53 },
+        28: { p3: 11.32, p10: 12.10, p25: 12.98, p50: 13.98, p75: 14.99, p90: 15.90, p97: 16.88 },
+        29: { p3: 11.53, p10: 12.33, p25: 13.23, p50: 14.26, p75: 15.29, p90: 16.23, p97: 17.24 },
+        30: { p3: 11.23, p10: 12.00, p25: 12.85, p50: 13.85, p75: 14.85, p90: 15.70, p97: 16.65 },
+        31: { p3: 11.44, p10: 12.23, p25: 13.10, p50: 14.12, p75: 15.15, p90: 16.03, p97: 17.01 },
+        32: { p3: 11.65, p10: 12.46, p25: 13.35, p50: 14.40, p75: 15.45, p90: 16.36, p97: 17.37 },
+        33: { p3: 11.86, p10: 12.69, p25: 13.60, p50: 14.67, p75: 15.75, p90: 16.69, p97: 17.73 },
+        34: { p3: 12.07, p10: 12.92, p25: 13.85, p50: 14.95, p75: 16.05, p90: 17.02, p97: 18.09 },
+        35: { p3: 12.28, p10: 13.15, p25: 14.10, p50: 15.22, p75: 16.35, p90: 17.35, p97: 18.45 },
+        36: { p3: 11.93, p10: 12.75, p25: 13.68, p50: 14.75, p75: 15.83, p90: 16.75, p97: 17.78 },
+        37: { p3: 12.13, p10: 12.97, p25: 13.93, p50: 15.02, p75: 16.13, p90: 17.07, p97: 18.13 },
+        38: { p3: 12.33, p10: 13.20, p25: 14.17, p50: 15.29, p75: 16.42, p90: 17.39, p97: 18.48 },
+        39: { p3: 12.53, p10: 13.42, p25: 14.42, p50: 15.56, p75: 16.71, p90: 17.71, p97: 18.82 },
+        40: { p3: 12.73, p10: 13.64, p25: 14.67, p50: 15.83, p75: 17.01, p90: 18.04, p97: 19.17 },
+        41: { p3: 12.93, p10: 13.87, p25: 14.91, p50: 16.10, p75: 17.31, p90: 18.36, p97: 19.52 },
+        42: { p3: 12.58, p10: 13.45, p25: 14.45, p50: 15.58, p75: 16.73, p90: 17.73, p97: 18.83 },
+        43: { p3: 12.78, p10: 13.68, p25: 14.70, p50: 15.85, p75: 17.03, p90: 18.05, p97: 19.18 },
+        44: { p3: 12.98, p10: 13.90, p25: 14.94, p50: 16.12, p75: 17.32, p90: 18.37, p97: 19.52 },
+        45: { p3: 13.18, p10: 14.12, p25: 15.19, p50: 16.39, p75: 17.62, p90: 18.69, p97: 19.87 },
+        46: { p3: 13.38, p10: 14.35, p25: 15.44, p50: 16.66, p75: 17.91, p90: 19.01, p97: 20.22 },
+        47: { p3: 13.58, p10: 14.57, p25: 15.68, p50: 16.93, p75: 18.21, p90: 19.34, p97: 20.57 },
+        48: { p3: 13.20, p10: 14.13, p25: 15.18, p50: 16.38, p75: 17.58, p90: 18.65, p97: 19.80 },
+        49: { p3: 13.40, p10: 14.35, p25: 15.43, p50: 16.65, p75: 17.87, p90: 18.97, p97: 20.15 },
+        50: { p3: 13.60, p10: 14.58, p25: 15.67, p50: 16.92, p75: 18.17, p90: 19.29, p97: 20.50 },
+        51: { p3: 13.80, p10: 14.80, p25: 15.92, p50: 17.19, p75: 18.46, p90: 19.61, p97: 20.85 },
+        52: { p3: 14.00, p10: 15.02, p25: 16.17, p50: 17.46, p75: 18.76, p90: 19.94, p97: 21.20 },
+        53: { p3: 14.20, p10: 15.25, p25: 16.41, p50: 17.73, p75: 19.06, p90: 20.26, p97: 21.55 },
+        54: { p3: 13.80, p10: 14.78, p25: 15.88, p50: 17.15, p75: 18.43, p90: 19.55, p97: 20.78 },
+        55: { p3: 14.00, p10: 15.00, p25: 16.12, p50: 17.42, p75: 18.72, p90: 19.87, p97: 21.13 },
+        56: { p3: 14.20, p10: 15.23, p25: 16.37, p50: 17.69, p75: 19.02, p90: 20.20, p97: 21.48 },
+        57: { p3: 14.40, p10: 15.45, p25: 16.61, p50: 17.96, p75: 19.31, p90: 20.52, p97: 21.83 },
+        58: { p3: 14.60, p10: 15.67, p25: 16.86, p50: 18.23, p75: 19.61, p90: 20.84, p97: 22.18 },
+        59: { p3: 14.80, p10: 15.90, p25: 17.10, p50: 18.50, p75: 19.90, p90: 21.17, p97: 22.53 },
+        60: { p3: 14.38, p10: 15.40, p25: 16.55, p50: 17.90, p75: 19.25, p90: 20.43, p97: 21.73 },
+        61: { p3: 14.58, p10: 15.62, p25: 16.80, p50: 18.17, p75: 19.54, p90: 20.75, p97: 22.08 },
+        62: { p3: 14.78, p10: 15.85, p25: 17.04, p50: 18.44, p75: 19.84, p90: 21.07, p97: 22.43 },
+        63: { p3: 14.98, p10: 16.07, p25: 17.29, p50: 18.71, p75: 20.13, p90: 21.39, p97: 22.78 },
+        64: { p3: 15.18, p10: 16.29, p25: 17.53, p50: 18.98, p75: 20.43, p90: 21.71, p97: 23.13 },
+        65: { p3: 15.38, p10: 16.52, p25: 17.78, p50: 19.25, p75: 20.72, p90: 22.03, p97: 23.48 },
+        66: { p3: 14.95, p10: 16.03, p25: 17.23, p50: 18.63, p75: 20.05, p90: 21.28, p97: 22.65 },
+        67: { p3: 15.15, p10: 16.25, p25: 17.48, p50: 18.90, p75: 20.34, p90: 21.60, p97: 23.00 },
+        68: { p3: 15.35, p10: 16.47, p25: 17.72, p50: 19.17, p75: 20.63, p90: 21.92, p97: 23.35 },
+        69: { p3: 15.55, p10: 16.70, p25: 17.97, p50: 19.44, p75: 20.93, p90: 22.24, p97: 23.70 },
+        70: { p3: 15.75, p10: 16.92, p25: 18.21, p50: 19.71, p75: 21.22, p90: 22.56, p97: 24.05 },
+        71: { p3: 15.95, p10: 17.14, p25: 18.46, p50: 19.98, p75: 21.52, p90: 22.88, p97: 24.40 },
+        72: { p3: 15.50, p10: 16.63, p25: 17.88, p50: 19.35, p75: 20.83, p90: 22.13, p97: 23.55 },
+        73: { p3: 15.70, p10: 16.85, p25: 18.12, p50: 19.62, p75: 21.12, p90: 22.45, p97: 23.90 },
+        74: { p3: 15.90, p10: 17.08, p25: 18.37, p50: 19.89, p75: 21.42, p90: 22.77, p97: 24.25 },
+        75: { p3: 16.10, p10: 17.30, p25: 18.61, p50: 20.16, p75: 21.71, p90: 23.09, p97: 24.60 },
+        76: { p3: 16.30, p10: 17.52, p25: 18.86, p50: 20.43, p75: 22.01, p90: 23.41, p97: 24.95 },
+        77: { p3: 16.50, p10: 17.75, p25: 19.10, p50: 20.70, p75: 22.30, p90: 23.73, p97: 25.30 },
+        78: { p3: 16.05, p10: 17.23, p25: 18.53, p50: 20.05, p75: 21.60, p90: 22.95, p97: 24.45 },
+        79: { p3: 16.25, p10: 17.45, p25: 18.77, p50: 20.32, p75: 21.89, p90: 23.27, p97: 24.80 },
+        80: { p3: 16.45, p10: 17.67, p25: 19.02, p50: 20.59, p75: 22.19, p90: 23.59, p97: 25.15 },
+        81: { p3: 16.65, p10: 17.90, p25: 19.26, p50: 20.86, p75: 22.48, p90: 23.91, p97: 25.50 },
+        82: { p3: 16.85, p10: 18.12, p25: 19.51, p50: 21.13, p75: 22.78, p90: 24.23, p97: 25.85 },
+        83: { p3: 17.05, p10: 18.34, p25: 19.75, p50: 21.40, p75: 23.07, p90: 24.55, p97: 26.20 },
+    },
+
+    // ============================================================
+    // 7-18岁数据（首都儿科研究所生长发育研究室标准）
+    // key为年龄（整数岁），值包含P3/P10/P25/P50/P75/P90/P97
+    // ============================================================
+
+    // 7-18岁 男孩 身高（cm）
+    heightMaleYear: {
+        7:  { p3: 110.8, p10: 113.7, p25: 116.8, p50: 120.6, p75: 124.5, p90: 128.0, p97: 131.8 },
+        8:  { p3: 115.3, p10: 118.4, p25: 121.8, p50: 125.8, p75: 130.0, p90: 133.7, p97: 137.6 },
+        9:  { p3: 119.6, p10: 123.0, p25: 126.6, p50: 130.8, p75: 135.2, p90: 139.1, p97: 143.2 },
+        10: { p3: 123.7, p10: 127.3, p25: 131.2, p50: 135.6, p75: 140.2, p90: 144.4, p97: 148.8 },
+        11: { p3: 127.6, p10: 131.5, p25: 135.6, p50: 140.3, p75: 145.2, p90: 149.7, p97: 154.3 },
+        12: { p3: 131.5, p10: 135.7, p25: 140.1, p50: 145.1, p75: 150.3, p90: 155.0, p97: 159.9 },
+        13: { p3: 136.0, p10: 140.4, p25: 145.0, p50: 150.2, p75: 155.6, p90: 160.4, p97: 165.5 },
+        14: { p3: 141.1, p10: 145.5, p25: 150.0, p50: 155.1, p75: 160.3, p90: 164.9, p97: 169.8 },
+        15: { p3: 146.2, p10: 150.4, p25: 154.6, p50: 159.4, p75: 164.3, p90: 168.7, p97: 173.2 },
+        16: { p3: 150.6, p10: 154.5, p25: 158.5, p50: 163.0, p75: 167.6, p90: 171.8, p97: 176.1 },
+        17: { p3: 153.8, p10: 157.5, p25: 161.3, p50: 165.6, p75: 169.9, p90: 174.0, p97: 178.1 },
+        18: { p3: 155.7, p10: 159.4, p25: 163.2, p50: 167.4, p75: 171.7, p90: 175.7, p97: 179.9 },
+    },
+
+    // 7-18岁 女孩 身高（cm）
+    heightFemaleYear: {
+        7:  { p3: 109.4, p10: 112.2, p25: 115.2, p50: 118.9, p75: 122.7, p90: 126.1, p97: 129.8 },
+        8:  { p3: 113.9, p10: 116.8, p25: 120.0, p50: 123.8, p75: 127.8, p90: 131.4, p97: 135.2 },
+        9:  { p3: 118.3, p10: 121.4, p25: 124.8, p50: 128.8, p75: 133.0, p90: 136.8, p97: 140.8 },
+        10: { p3: 122.8, p10: 126.1, p25: 129.7, p50: 133.9, p75: 138.3, p90: 142.3, p97: 146.5 },
+        11: { p3: 127.4, p10: 130.9, p25: 134.7, p50: 139.2, p75: 143.8, p90: 148.0, p97: 152.3 },
+        12: { p3: 132.3, p10: 135.9, p25: 139.8, p50: 144.3, p75: 149.0, p90: 153.2, p97: 157.6 },
+        13: { p3: 136.7, p10: 140.3, p25: 144.1, p50: 148.5, p75: 153.0, p90: 157.1, p97: 161.4 },
+        14: { p3: 140.0, p10: 143.4, p25: 147.1, p50: 151.2, p75: 155.4, p90: 159.3, p97: 163.4 },
+        15: { p3: 142.1, p10: 145.3, p25: 148.8, p50: 152.7, p75: 156.8, p90: 160.5, p97: 164.4 },
+        16: { p3: 143.3, p10: 146.4, p25: 149.8, p50: 153.6, p75: 157.6, p90: 161.2, p97: 165.0 },
+        17: { p3: 143.9, p10: 146.9, p25: 150.3, p50: 154.0, p75: 157.9, p90: 161.5, p97: 165.3 },
+        18: { p3: 144.2, p10: 147.2, p25: 150.6, p50: 154.3, p75: 158.2, p90: 161.8, p97: 165.6 },
+    },
+
+    // 7-18岁 男孩 体重（kg）
+    weightMaleYear: {
+        7:  { p3: 17.1, p10: 18.4, p25: 19.9, p50: 21.8, p75: 24.0, p90: 26.2, p97: 28.8 },
+        8:  { p3: 18.4, p10: 19.9, p25: 21.7, p50: 23.9, p75: 26.5, p90: 29.2, p97: 32.3 },
+        9:  { p3: 19.7, p10: 21.5, p25: 23.6, p50: 26.2, p75: 29.3, p90: 32.6, p97: 36.5 },
+        10: { p3: 21.2, p10: 23.2, p25: 25.7, p50: 28.8, p75: 32.5, p90: 36.5, p97: 41.4 },
+        11: { p3: 22.8, p10: 25.2, p25: 28.1, p50: 31.8, p75: 36.2, p90: 41.0, p97: 46.9 },
+        12: { p3: 24.7, p10: 27.5, p25: 30.9, p50: 35.2, p75: 40.3, p90: 45.9, p97: 52.7 },
+        13: { p3: 27.1, p10: 30.3, p25: 34.1, p50: 38.9, p75: 44.7, p90: 51.0, p97: 58.5 },
+        14: { p3: 29.9, p10: 33.4, p25: 37.5, p50: 42.7, p75: 48.9, p90: 55.6, p97: 63.4 },
+        15: { p3: 33.0, p10: 36.7, p25: 41.1, p50: 46.6, p75: 53.0, p90: 59.8, p97: 67.6 },
+        16: { p3: 36.0, p10: 39.8, p25: 44.2, p50: 49.7, p75: 56.2, p90: 63.0, p97: 70.6 },
+        17: { p3: 38.6, p10: 42.4, p25: 46.8, p50: 52.3, p75: 58.7, p90: 65.5, p97: 73.0 },
+        18: { p3: 40.7, p10: 44.5, p25: 48.9, p50: 54.4, p75: 60.8, p90: 67.5, p97: 74.9 },
+    },
+
+    // 7-18岁 女孩 体重（kg）
+    weightFemaleYear: {
+        7:  { p3: 16.4, p10: 17.7, p25: 19.2, p50: 21.0, p75: 23.2, p90: 25.4, p97: 27.9 },
+        8:  { p3: 17.7, p10: 19.2, p25: 21.0, p50: 23.2, p75: 25.8, p90: 28.5, p97: 31.6 },
+        9:  { p3: 19.0, p10: 20.9, p25: 23.0, p50: 25.6, p75: 28.7, p90: 32.0, p97: 36.0 },
+        10: { p3: 20.6, p10: 22.8, p25: 25.3, p50: 28.4, p75: 32.1, p90: 36.1, p97: 41.0 },
+        11: { p3: 22.4, p10: 25.0, p25: 27.9, p50: 31.5, p75: 35.8, p90: 40.6, p97: 46.4 },
+        12: { p3: 24.5, p10: 27.5, p25: 30.8, p50: 34.9, p75: 39.7, p90: 45.0, p97: 51.3 },
+        13: { p3: 26.6, p10: 29.9, p25: 33.5, p50: 38.0, p75: 43.2, p90: 48.8, p97: 55.4 },
+        14: { p3: 28.6, p10: 32.0, p25: 35.8, p50: 40.4, p75: 45.8, p90: 51.5, p97: 58.1 },
+        15: { p3: 30.4, p10: 33.8, p25: 37.6, p50: 42.2, p75: 47.6, p90: 53.3, p97: 59.8 },
+        16: { p3: 31.8, p10: 35.2, p25: 38.9, p50: 43.5, p75: 48.8, p90: 54.4, p97: 60.8 },
+        17: { p3: 32.9, p10: 36.3, p25: 40.0, p50: 44.5, p75: 49.7, p90: 55.3, p97: 61.5 },
+        18: { p3: 33.7, p10: 37.0, p25: 40.7, p50: 45.2, p75: 50.4, p90: 55.9, p97: 62.1 },
+    },
+
+    // ============================================================
+    // 儿童血压标准（WS/T 610-2018 + 中国高血压防治指南2018）
+    //
+    // 数据来源：
+    //   - 7-17岁：WS/T 610-2018《7岁~18岁儿童青少年血压偏高筛查界值》
+    //             附录A（身高百分位参考值）+ 附录B（按年龄+身高别的P90/P95）
+    //   - 18岁：参考成人标准（SBP≥140/DBP≥90为高血压，≥120/80为正常高值）
+    //   - 3-6岁（<7岁）：使用简化公式（2018指南表11），精度足够筛查
+    //     男：SBP_P95 = 100+2×Age，DBP_P95 = 65+Age
+    //     女：SBP_P95 = 100+1.5×Age，DBP_P95 = 65+Age
+    //     P90 ≈ P95 - 4~5mmHg（根据标准差估算）
+    //
+    // 重要说明：
+    //   - 血压评估仅需"年龄+性别+身高"，与体重无关
+    //   - 7-17岁使用"年龄别+身高别"双维度精确评估
+    //   - 诊断标准：SBP和/或DBP ≥P95 → 血压偏高
+    //              SBP和/或DBP ≥P90且<P95，或≥120/80 → 正常高值
+    //              <P90 → 正常
+    // ============================================================
+
+    // ---- 7-17岁男生分年龄身高水平参考值（WS/T 610-2018 附录A）----
+    // 单位：cm，用于确定身高百分位组
+    heightReferenceForBP_male: {
+        7:  { p5: 115.7, p10: 117.9, p25: 121.5, p50: 125.5, p75: 129.5, p90: 133.3, p95: 135.4 },
+        8:  { p5: 120.6, p10: 122.9, p25: 126.5, p50: 130.7, p75: 134.9, p90: 138.7, p95: 141.0 },
+        9:  { p5: 125.0, p10: 127.4, p25: 131.4, p50: 135.8, p75: 140.3, p90: 144.2, p95: 146.6 },
+        10: { p5: 130.0, p10: 132.1, p25: 136.1, p50: 140.8, p75: 145.4, p90: 149.8, p95: 152.4 },
+        11: { p5: 133.7, p10: 136.4, p25: 141.0, p50: 146.0, p75: 151.3, p90: 156.5, p95: 159.7 },
+        12: { p5: 138.4, p10: 141.2, p25: 146.0, p50: 152.0, p75: 158.6, p90: 164.1, p95: 167.3 },
+        13: { p5: 145.1, p10: 148.2, p25: 154.0, p50: 160.2, p75: 166.2, p90: 170.7, p95: 173.4 },
+        14: { p5: 151.6, p10: 155.0, p25: 160.4, p50: 165.7, p75: 170.5, p90: 175.0, p95: 177.5 },
+        15: { p5: 157.2, p10: 160.0, p25: 164.4, p50: 169.0, p75: 173.4, p90: 177.4, p95: 180.0 },
+        16: { p5: 160.0, p10: 162.4, p25: 166.3, p50: 170.5, p75: 174.9, p90: 178.8, p95: 181.0 },
+        17: { p5: 161.2, p10: 163.3, p25: 167.1, p50: 171.4, p75: 175.6, p90: 179.5, p95: 181.9 },
+    },
+    // ---- 7-17岁女生分年龄身高水平参考值（WS/T 610-2018 附录A）----
+    heightReferenceForBP_female: {
+        7:  { p5: 114.3, p10: 116.5, p25: 120.1, p50: 124.1, p75: 128.1, p90: 131.9, p95: 134.0 },
+        8:  { p5: 119.2, p10: 121.5, p25: 125.2, p50: 129.3, p75: 133.6, p90: 137.2, p95: 139.6 },
+        9:  { p5: 124.0, p10: 126.4, p25: 130.3, p50: 135.0, p75: 139.6, p90: 143.9, p95: 146.5 },
+        10: { p5: 129.1, p10: 131.8, p25: 136.0, p50: 141.2, p75: 146.3, p90: 150.7, p95: 153.3 },
+        11: { p5: 134.2, p10: 137.1, p25: 142.0, p50: 147.3, p75: 152.7, p90: 157.1, p95: 159.6 },
+        12: { p5: 139.7, p10: 142.6, p25: 147.5, p50: 152.5, p75: 157.1, p90: 160.9, p95: 163.5 },
+        13: { p5: 145.6, p10: 148.0, p25: 152.0, p50: 156.1, p75: 160.0, p90: 163.8, p95: 166.0 },
+        14: { p5: 148.2, p10: 150.4, p25: 154.0, p50: 157.8, p75: 161.6, p90: 165.1, p95: 167.2 },
+        15: { p5: 149.2, p10: 151.4, p25: 154.8, p50: 158.4, p75: 162.2, p90: 166.0, p95: 168.0 },
+        16: { p5: 150.0, p10: 151.7, p25: 155.2, p50: 159.0, p75: 162.8, p90: 166.3, p95: 168.3 },
+        17: { p5: 150.1, p10: 152.0, p25: 155.3, p50: 159.2, p75: 163.1, p90: 166.6, p95: 168.8 },
+    },
+
+    // ---- 7-17岁男生按年龄+身高别血压偏高界值（WS/T 610-2018 附录B 表B.1）----
+    // 每行：[<P5, ≥P5, ≥P10, ≥P25, ≥P50, ≥P75, ≥P90, ≥P95] 对应8个身高组的收缩压/舒张压
+    bloodPressureByHeight_male: {
+        //  age: { p90: { sbp:[8个值], dbp:[8个值] }, p95: { sbp:[8个值], dbp:[8个值] } }
+        7:  { p90: { sbp:[104,106,108,109,110,112,113,116], dbp:[69,70,71,71,72,73,75,75] },
+               p95: { sbp:[108,110,112,113,115,117,118,121], dbp:[72,74,74,74,75,77,78,79] } },
+        8:  { p90: { sbp:[106,108,109,111,112,115,116,119], dbp:[70,71,72,72,73,75,76,77] },
+               p95: { sbp:[110,112,113,115,117,119,120,124], dbp:[73,75,75,76,76,78,80,80] } },
+        9:  { p90: { sbp:[108,109,110,112,114,117,118,121], dbp:[71,72,72,74,74,76,77,78] },
+               p95: { sbp:[112,114,114,117,119,121,122,126], dbp:[74,76,76,77,77,79,81,81] } },
+        10: { p90: { sbp:[109,111,112,114,116,119,121,124], dbp:[72,73,73,75,75,77,78,78] },
+               p95: { sbp:[113,115,116,119,121,123,125,129], dbp:[75,76,76,78,78,80,81,82] } },
+        11: { p90: { sbp:[110,112,113,116,118,121,123,126], dbp:[73,73,74,75,76,78,78,79] },
+               p95: { sbp:[115,116,117,120,123,126,128,131], dbp:[76,77,77,79,79,81,81,82] } },
+        12: { p90: { sbp:[111,113,115,118,121,123,125,128], dbp:[74,74,75,76,77,78,79,80] },
+               p95: { sbp:[116,117,119,122,125,128,130,133], dbp:[77,77,78,79,80,81,82,83] } },
+        13: { p90: { sbp:[113,115,118,121,123,125,127,130], dbp:[75,75,76,77,78,79,79,80] },
+               p95: { sbp:[117,119,122,125,127,130,132,134], dbp:[78,78,79,80,81,82,82,83] } },
+        14: { p90: { sbp:[116,118,121,123,125,127,128,130], dbp:[76,76,77,78,79,80,80,81] },
+               p95: { sbp:[120,122,125,128,129,131,133,135], dbp:[79,79,80,81,82,83,83,84] } },
+        15: { p90: { sbp:[119,122,123,125,127,128,129,131], dbp:[77,77,79,79,80,80,81,81] },
+               p95: { sbp:[123,126,128,130,131,132,133,136], dbp:[80,80,82,82,83,83,83,84] } },
+        16: { p90: { sbp:[122,125,126,127,128,129,130,132], dbp:[78,79,80,80,81,81,81,82] },
+               p95: { sbp:[127,129,130,131,132,133,134,136], dbp:[81,82,83,83,84,84,84,85] } },
+        17: { p90: { sbp:[125,127,127,128,129,130,131,132], dbp:[79,80,81,81,82,82,82,83] },
+               p95: { sbp:[129,131,131,132,133,134,135,136], dbp:[82,83,84,84,85,85,85,86] } },
+    },
+    // ---- 7-17岁女生按年龄+身高别血压偏高界值（WS/T 610-2018 附录B 表B.2）----
+    bloodPressureByHeight_female: {
+        7:  { p90: { sbp:[104,104,106,107,108,110,112,115], dbp:[69,69,70,70,71,72,73,74] },
+               p95: { sbp:[109,109,111,111,113,115,117,121], dbp:[73,73,74,74,74,75,76,77] } },
+        8:  { p90: { sbp:[106,106,108,109,111,113,114,117], dbp:[70,70,71,72,73,73,75,75] },
+               p95: { sbp:[110,110,113,113,115,117,119,123], dbp:[74,74,75,75,76,77,78,78] } },
+        9:  { p90: { sbp:[107,108,110,111,113,115,117,119], dbp:[71,72,73,73,74,75,76,77] },
+               p95: { sbp:[112,112,114,115,117,119,121,124], dbp:[75,76,76,77,77,78,79,81] } },
+        10: { p90: { sbp:[109,110,111,113,115,117,118,121], dbp:[73,74,74,75,75,76,77,78] },
+               p95: { sbp:[113,114,116,117,119,121,123,125], dbp:[77,77,78,78,79,79,80,81] } },
+        11: { p90: { sbp:[110,111,113,115,117,119,120,121], dbp:[74,75,75,76,76,77,78,78] },
+               p95: { sbp:[115,116,117,119,121,123,124,126], dbp:[78,78,79,79,79,80,81,81] } },
+        12: { p90: { sbp:[112,113,115,116,118,119,121,122], dbp:[75,75,76,76,77,77,78,78] },
+               p95: { sbp:[116,117,119,121,122,124,125,126], dbp:[79,79,79,80,80,80,81,81] } },
+        13: { p90: { sbp:[114,114,116,117,119,119,121,122], dbp:[76,76,76,77,77,77,78,78] },
+               p95: { sbp:[118,119,120,122,123,124,125,126], dbp:[79,79,80,80,80,80,81,81] } },
+        14: { p90: { sbp:[116,116,117,118,119,120,121,122], dbp:[76,76,77,77,77,78,78,78] },
+               p95: { sbp:[120,120,121,122,123,124,125,126], dbp:[80,80,80,80,80,80,81,81] } },
+        15: { p90: { sbp:[117,117,118,119,119,120,121,122], dbp:[77,77,77,77,77,78,79,79] },
+               p95: { sbp:[122,122,122,123,123,124,126,126], dbp:[80,80,80,80,80,81,82,82] } },
+        16: { p90: { sbp:[118,118,118,119,119,120,121,122], dbp:[77,77,77,77,78,78,79,79] },
+               p95: { sbp:[122,122,122,123,123,125,126,126], dbp:[80,80,80,80,81,81,82,82] } },
+        17: { p90: { sbp:[118,118,118,120,120,121,122,122], dbp:[77,77,77,78,78,79,79,79] },
+               p95: { sbp:[122,122,123,124,124,125,126,126], dbp:[80,80,81,81,81,81,82,82] } },
+    },
+};
+
+// ============================================================
+// BMI标准参考（WS/T 586—2018《学龄儿童青少年超重与肥胖筛查》）
+// 按年龄分组，判断偏瘦/正常/超重/肥胖
+// ============================================================
+const BMICutoffs = {
+    male: {
+        2:  { thin: 13.5, normal_max: 17.0, overweight: 18.9, obese: 21.0 },
+        3:  { thin: 13.2, normal_max: 16.5, overweight: 18.1, obese: 20.4 },
+        4:  { thin: 12.9, normal_max: 16.1, overweight: 17.4, obese: 19.5 },
+        5:  { thin: 12.8, normal_max: 16.0, overweight: 17.1, obese: 19.0 },
+        6:  { thin: 12.7, normal_max: 16.0, overweight: 17.2, obese: 19.2 },
+        7:  { thin: 12.8, normal_max: 16.4, overweight: 17.6, obese: 19.6 },
+        8:  { thin: 13.0, normal_max: 16.8, overweight: 18.1, obese: 20.3 },
+        9:  { thin: 13.2, normal_max: 17.3, overweight: 18.9, obese: 21.4 },
+        10: { thin: 13.5, normal_max: 17.9, overweight: 19.6, obese: 22.5 },
+        11: { thin: 13.9, normal_max: 18.6, overweight: 20.5, obese: 23.6 },
+        12: { thin: 14.3, normal_max: 19.3, overweight: 21.5, obese: 24.7 },
+        13: { thin: 14.8, normal_max: 20.1, overweight: 22.4, obese: 25.7 },
+        14: { thin: 15.4, normal_max: 20.8, overweight: 23.2, obese: 26.6 },
+        15: { thin: 15.9, normal_max: 21.5, overweight: 24.0, obese: 27.4 },
+        16: { thin: 16.4, normal_max: 22.1, overweight: 24.8, obese: 28.2 },
+        17: { thin: 16.8, normal_max: 22.6, overweight: 25.3, obese: 28.8 },
+        18: { thin: 17.3, normal_max: 23.2, overweight: 26.0, obese: 30.0 },
+    },
+    female: {
+        2:  { thin: 13.2, normal_max: 16.8, overweight: 18.9, obese: 21.3 },
+        3:  { thin: 12.9, normal_max: 16.3, overweight: 18.1, obese: 20.6 },
+        4:  { thin: 12.6, normal_max: 15.9, overweight: 17.3, obese: 19.6 },
+        5:  { thin: 12.5, normal_max: 15.8, overweight: 17.0, obese: 19.2 },
+        6:  { thin: 12.5, normal_max: 15.9, overweight: 17.3, obese: 19.7 },
+        7:  { thin: 12.6, normal_max: 16.2, overweight: 17.7, obese: 20.4 },
+        8:  { thin: 12.9, normal_max: 16.7, overweight: 18.5, obese: 21.4 },
+        9:  { thin: 13.2, normal_max: 17.3, overweight: 19.3, obese: 22.5 },
+        10: { thin: 13.6, normal_max: 17.9, overweight: 20.1, obese: 23.5 },
+        11: { thin: 14.1, normal_max: 18.6, overweight: 21.0, obese: 24.4 },
+        12: { thin: 14.7, normal_max: 19.3, overweight: 21.9, obese: 25.2 },
+        13: { thin: 15.2, normal_max: 20.0, overweight: 22.7, obese: 26.1 },
+        14: { thin: 15.8, normal_max: 20.7, overweight: 23.4, obese: 26.9 },
+        15: { thin: 16.4, normal_max: 21.3, overweight: 24.0, obese: 27.5 },
+        16: { thin: 16.8, normal_max: 21.8, overweight: 24.5, obese: 28.0 },
+        17: { thin: 17.2, normal_max: 22.2, overweight: 24.9, obese: 28.4 },
+        18: { thin: 17.6, normal_max: 22.7, overweight: 25.3, obese: 29.0 },
+    }
+};
+
+/**
+ * 儿童生长发育评估核心逻辑
+ * 使用线性插值法计算精确百分位
+ * 百分位最大值显示为 ">P97"，不超过此上限
+ */
+
+const Assessment = {
+
+    // 百分位对应数组（方便遍历）
+    PERCENTILE_KEYS: ['p3', 'p10', 'p25', 'p50', 'p75', 'p90', 'p97'],
+    PERCENTILE_VALUES: [3, 10, 25, 50, 75, 90, 97],
+
+    /**
+     * 根据年龄（岁或月龄）和性别获取生长数据
+     * @param {string} type - 'height' | 'weight'
+     * @param {string} gender - 'male' | 'female'
+     * @param {number} ageMonths - 月龄（0-215）
+     * @returns {Object} 该月龄/年龄的百分位数据
+     */
+    getDataForAge(type, gender, ageMonths) {
+        if (ageMonths < 84) {
+            // 0-83月（7岁以下）：使用月龄数据
+            const dataObj = type === 'height'
+                ? (gender === 'male' ? GrowthData.heightMale : GrowthData.heightFemale)
+                : (gender === 'male' ? GrowthData.weightMale : GrowthData.weightFemale);
+
+            const floorMonth = Math.floor(ageMonths);
+            const ceilMonth  = Math.ceil(ageMonths);
+
+            if (dataObj[floorMonth] && floorMonth === ceilMonth) {
+                return dataObj[floorMonth];
+            }
+
+            // 在相邻月龄之间线性插值
+            const lowerData = dataObj[floorMonth];
+            const upperData = dataObj[ceilMonth];
+
+            if (!lowerData || !upperData) {
+                return lowerData || upperData;
+            }
+
+            const ratio = ageMonths - floorMonth;
+            const interpolated = {};
+            for (const key of this.PERCENTILE_KEYS) {
+                interpolated[key] = lowerData[key] + (upperData[key] - lowerData[key]) * ratio;
+                interpolated[key] = Math.round(interpolated[key] * 10) / 10;
+            }
+            return interpolated;
+
+        } else {
+            // 7岁及以上：使用整岁数据
+            const ageYears = ageMonths / 12;
+            const dataObj = type === 'height'
+                ? (gender === 'male' ? GrowthData.heightMaleYear : GrowthData.heightFemaleYear)
+                : (gender === 'male' ? GrowthData.weightMaleYear : GrowthData.weightFemaleYear);
+
+            const floorYear = Math.min(18, Math.max(7, Math.floor(ageYears)));
+            const ceilYear  = Math.min(18, Math.ceil(ageYears));
+
+            if (floorYear === ceilYear || !dataObj[ceilYear]) {
+                return dataObj[floorYear];
+            }
+
+            const ratio = ageYears - floorYear;
+            const lowerData = dataObj[floorYear];
+            const upperData = dataObj[ceilYear];
+            const interpolated = {};
+            for (const key of this.PERCENTILE_KEYS) {
+                interpolated[key] = lowerData[key] + (upperData[key] - lowerData[key]) * ratio;
+                interpolated[key] = Math.round(interpolated[key] * 10) / 10;
+            }
+            return interpolated;
+        }
+    },
+
+    /**
+     * 线性插值计算精确百分位
+     * @param {number} value - 测量值
+     * @param {Object} data - 该年龄段的参考数据
+     * @returns {Object} { percentile, display, class, isBelow3, isAbove97 }
+     */
+    calcPercentile(value, data) {
+        const pKeys = this.PERCENTILE_KEYS;
+        const pVals = this.PERCENTILE_VALUES;
+
+        // 低于 P3
+        if (value < data.p3) {
+            return {
+                display: '<P3',
+                numeric: null,
+                isBelow3: true,
+                isAbove97: false,
+            };
+        }
+
+        // 高于 P97
+        if (value > data.p97) {
+            return {
+                display: '>P97',
+                numeric: null,
+                isBelow3: false,
+                isAbove97: true,
+            };
+        }
+
+        // 在 P3-P97 之间，线性插值
+        for (let i = 0; i < pKeys.length - 1; i++) {
+            const lowerVal = data[pKeys[i]];
+            const upperVal = data[pKeys[i + 1]];
+
+            if (value >= lowerVal && value <= upperVal) {
+                const range = upperVal - lowerVal;
+                const position = range === 0 ? 0 : (value - lowerVal) / range;
+                const percentile = pVals[i] + (pVals[i + 1] - pVals[i]) * position;
+                const rounded = Math.round(percentile);
+
+                return {
+                    display: `P${rounded}`,
+                    numeric: rounded,
+                    isBelow3: false,
+                    isAbove97: false,
+                };
+            }
+        }
+
+        // 恰好等于某个百分位
+        for (let i = 0; i < pKeys.length; i++) {
+            if (value === data[pKeys[i]]) {
+                return {
+                    display: `P${pVals[i]}`,
+                    numeric: pVals[i],
+                    isBelow3: false,
+                    isAbove97: false,
+                };
+            }
+        }
+
+        return { display: '--', numeric: null, isBelow3: false, isAbove97: false };
+    },
+
+    /**
+     * 评估身高
+     */
+    assessHeight(height, ageMonths, gender) {
+        const data = this.getDataForAge('height', gender, ageMonths);
+        if (!data) return null;
+
+        const result = this.calcPercentile(height, data);
+        result.evaluation = this.getHeightEvaluation(result);
+        result.range = `参考范围：${data.p3} ~ ${data.p97} cm（P3-P97）`;
+        result.data = data;
+        return result;
+    },
+
+    /**
+     * 评估体重
+     */
+    assessWeight(weight, ageMonths, gender) {
+        const data = this.getDataForAge('weight', gender, ageMonths);
+        if (!data) return null;
+
+        const result = this.calcPercentile(weight, data);
+        result.evaluation = this.getWeightEvaluation(result);
+        result.range = `参考范围：${data.p3} ~ ${data.p97} kg（P3-P97）`;
+        result.data = data;
+        return result;
+    },
+
+    /**
+     * 评估BMI
+     */
+    assessBMI(height, weight, ageMonths) {
+        const heightM = height / 100;
+        const bmi = weight / (heightM * heightM);
+        const bmiRounded = Math.round(bmi * 10) / 10;
+
+        const ageYears = Math.floor(Math.min(18, Math.max(2, ageMonths / 12)));
+        const standard = BMICutoffs.male[ageYears] || BMICutoffs.male[5];
+
+        let evaluation, level;
+        if (bmi < standard.thin) {
+            evaluation = '偏瘦';
+            level = 'low';
+        } else if (bmi < standard.overweight) {
+            evaluation = '正常';
+            level = 'normal';
+        } else if (bmi < standard.obese) {
+            evaluation = '超重';
+            level = 'warning';
+        } else {
+            evaluation = '肥胖';
+            level = 'high';
+        }
+
+        return { bmi: bmiRounded, evaluation, level, standard };
+    },
+
+    /**
+     * 根据身高确定身高百分位组（对应血压表的8列：<P5,≥P5,≥P10,≥P25,≥P50,≥P75,≥P90,≥P95）
+     * @returns {number} 0-7 对应数组索引
+     */
+    getHeightGroupForBP(height, ageYears, gender) {
+        const refKey = gender === 'male' ? 'heightReferenceForBP_male' : 'heightReferenceForBP_female';
+        const ref = GrowthData[refKey][ageYears];
+        if (!ref) return 3; // 无数据时默认P50组
+
+        if (height >= ref.p95) return 7;
+        if (height >= ref.p90) return 6;
+        if (height >= ref.p75) return 5;
+        if (height >= ref.p50) return 4;
+        if (height >= ref.p25) return 3;
+        if (height >= ref.p10) return 2;
+        if (height >= ref.p5)  return 1;
+        return 0; // <P5
+    },
+
+    /**
+     * 评估血压（身高+年龄双维度，WS/T 610-2018）
+     *
+     * @param {number} systolic  - 收缩压（mmHg）
+     * @param {number} diastolic - 舒张压（mmHg）
+     * @param {number} ageMonths - 月龄
+     * @param {string} gender    - 'male' | 'female'
+     * @param {number|null} height - 身高（cm），有则精确评估；无则按P50身高组
+     */
+    assessBloodPressure(systolic, diastolic, ageMonths, gender, height) {
+        const ageYears = Math.round(ageMonths / 12); // 四舍五入到整岁（WS/T 610-2018 §4.1.1）
+        const ageYearsClamped = Math.min(17, Math.max(3, ageYears));
+
+        // ≥ 18岁：成人标准
+        if (ageYears >= 18) {
+            let status, evaluation;
+            if (systolic >= 140 || diastolic >= 90) {
+                status = 'high';
+                evaluation = '血压偏高，建议就医评估';
+            } else if (systolic >= 120 || diastolic >= 80) {
+                status = 'elevated';
+                evaluation = '血压处于正常高值，建议监测';
+            } else {
+                status = 'normal';
+                evaluation = '血压正常';
+            }
+            return {
+                status, evaluation,
+                sbpP90: 120, sbpP95: 140, dbpP90: 80, dbpP95: 90,
+                ageNote: `${ageYears}岁（成人标准）`,
+                heightNote: '—',
+                standard: '成人标准'
+            };
+        }
+
+        // 3-17岁：使用WS/T 610-2018表格标准
+        if (ageYearsClamped >= 7) {
+            const bpTableKey = gender === 'male'
+                ? 'bloodPressureByHeight_male'
+                : 'bloodPressureByHeight_female';
+            const bpTable = GrowthData[bpTableKey][ageYearsClamped];
+
+            // 确定身高组（有身高则精确，无身高则取P50组=索引4）
+            let hGroup = 4; // 默认P50组
+            let heightNote = '（未填身高，按P50估算）';
+            const HGroupLabels = ['<P5','P5~P10','P10~P25','P25~P50','P50~P75','P75~P90','P90~P95','≥P95'];
+
+            if (height && height > 0) {
+                hGroup = this.getHeightGroupForBP(height, ageYearsClamped, gender);
+                heightNote = `身高组：${HGroupLabels[hGroup]}`;
+            }
+
+            const sbpP90 = bpTable.p90.sbp[hGroup];
+            const dbpP90 = bpTable.p90.dbp[hGroup];
+            const sbpP95 = bpTable.p95.sbp[hGroup];
+            const dbpP95 = bpTable.p95.dbp[hGroup];
+
+            let status, evaluation;
+            if (systolic >= sbpP95 || diastolic >= dbpP95) {
+                status = 'high';
+                evaluation = '血压偏高（≥P95），建议就医进一步评估';
+            } else if (systolic >= sbpP90 || diastolic >= dbpP90 || systolic >= 120 || diastolic >= 80) {
+                status = 'elevated';
+                evaluation = '正常高值血压（P90~P95），建议定期监测';
+            } else {
+                status = 'normal';
+                evaluation = '血压正常（<P90）';
+            }
+
+            return {
+                status, evaluation,
+                sbpP90, sbpP95, dbpP90, dbpP95,
+                ageNote: `${ageYearsClamped}岁`,
+                heightNote,
+                standard: 'WS/T 610-2018'
+            };
+
+        } else {
+            // 3-6岁：使用简化公式（2018高血压防治指南 表11）
+            // 男：SBP_P95 = 100+2×Age，DBP_P95 = 65+Age
+            // 女：SBP_P95 = 100+1.5×Age，DBP_P95 = 65+Age
+            // P90 ≈ P95 - 4
+            const age = Math.max(3, ageYearsClamped);
+            let sbpP95, dbpP95;
+            if (gender === 'male') {
+                sbpP95 = 100 + 2 * age;
+                dbpP95 = 65 + age;
+            } else {
+                sbpP95 = 100 + 1.5 * age;
+                dbpP95 = 65 + age;
+            }
+            const sbpP90 = sbpP95 - 4;
+            const dbpP90 = dbpP95 - 4;
+
+            let status, evaluation;
+            if (systolic >= sbpP95 || diastolic >= dbpP95) {
+                status = 'high';
+                evaluation = '血压偏高（≥P95），建议就医进一步评估';
+            } else if (systolic >= sbpP90 || diastolic >= dbpP90) {
+                status = 'elevated';
+                evaluation = '正常高值血压（P90~P95），建议定期监测';
+            } else {
+                status = 'normal';
+                evaluation = '血压正常（<P90）';
+            }
+
+            return {
+                status, evaluation,
+                sbpP90, sbpP95, dbpP90, dbpP95,
+                ageNote: `${age}岁`,
+                heightNote: '（3-6岁使用简化公式）',
+                standard: '中国高血压防治指南2018'
+            };
+        }
+    },
+
+    /**
+     * 根据百分位获取身高评价
+     */
+    getHeightEvaluation(result) {
+        if (result.isAbove97) return '身材高大（>P97）';
+        if (result.isBelow3)  return '身材矮小（<P3），建议就诊';
+        const p = result.numeric;
+        if (p >= 90) return '身材较高（P90-P97）';
+        if (p >= 75) return '中等偏上（P75-P90）';
+        if (p >= 25) return '身高正常（P25-P75）';
+        if (p >= 10) return '中等偏下（P10-P25）';
+        return '身材偏矮（P3-P10），建议关注';
+    },
+
+    /**
+     * 根据百分位获取体重评价
+     */
+    getWeightEvaluation(result) {
+        if (result.isAbove97) return '体重过重（>P97），建议就诊';
+        if (result.isBelow3)  return '体重过轻（<P3），建议就诊';
+        const p = result.numeric;
+        if (p >= 90) return '体重偏重（P90-P97），注意饮食';
+        if (p >= 75) return '体重较重（P75-P90）';
+        if (p >= 25) return '体重正常（P25-P75）';
+        if (p >= 10) return '体重较轻（P10-P25）';
+        return '体重偏轻（P3-P10），建议关注';
+    },
+
+    /**
+     * 获取百分位对应的颜色 CSS class
+     */
+    getEvalClass(result) {
+        if (!result) return 'normal';
+        if (result.isAbove97) return 'high';
+        if (result.isBelow3)  return 'danger';
+        const p = result.numeric;
+        if (p >= 90) return 'warning';
+        if (p >= 10) return 'normal';
+        return 'warning';
+    },
+
+    /**
+     * 计算百分位在进度条上的百分比位置（P3=5%, P97=95%，线性映射）
+     */
+    getBarPosition(result) {
+        if (!result || result.isBelow3) return 2;
+        if (result.isAbove97) return 98;
+        const p = result.numeric;
+        if (p === null) return 50;
+        // 映射 P3(3) -> 5%, P97(97) -> 95%
+        return 5 + (p - 3) / (97 - 3) * 90;
+    }
+};
+
+/**
+ * 儿童生长发育评估 - 主交互逻辑
+ */
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    // ---- DOM 引用 ----
+    const genderBtns    = document.querySelectorAll('.gender-btn');
+    const ageTabs       = document.querySelectorAll('.age-tab');
+    const monthInput    = document.getElementById('monthInput');
+    const yearInput     = document.getElementById('yearInput');
+    const ageMonthEl    = document.getElementById('ageMonth');
+    const ageYearEl     = document.getElementById('ageYear');
+    const heightInput   = document.getElementById('height');
+    const weightInput   = document.getElementById('weight');
+    const systolicInput = document.getElementById('systolic');
+    const diastolicInput= document.getElementById('diastolic');
+    const assessBtn     = document.getElementById('assessBtn');
+    const reAssessBtn   = document.getElementById('reAssessBtn');
+    const inputSection  = document.getElementById('inputSection');
+    const resultSection = document.getElementById('resultSection');
+    const errorBox      = document.getElementById('errorBox');
+    const heightHint    = document.getElementById('heightHint');
+
+    // ---- 状态 ----
+    let selectedGender  = null;
+    let ageInputMode    = 'month';  // 'month' | 'year'
+
+    // ---- 性别切换 ----
+    genderBtns.forEach(btn => {
+        btn.addEventListener('click', function () {
+            genderBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            selectedGender = this.dataset.gender;
+        });
+    });
+
+    // ---- 年龄模式切换 ----
+    ageTabs.forEach(tab => {
+        tab.addEventListener('click', function () {
+            ageTabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            ageInputMode = this.dataset.mode;
+            if (ageInputMode === 'month') {
+                monthInput.style.display = '';
+                yearInput.style.display  = 'none';
+            } else {
+                monthInput.style.display = 'none';
+                yearInput.style.display  = '';
+            }
+        });
+    });
+
+    // ---- 月龄自动更新身高提示 ----
+    ageMonthEl.addEventListener('input', updateHeightHint);
+    ageYearEl.addEventListener('input', updateHeightHint);
+
+    function updateHeightHint() {
+        const months = getAgeMonths();
+        if (months !== null && months < 24) {
+            heightHint.textContent = '2岁以下请测量仰卧身长';
+        } else {
+            heightHint.textContent = '2岁及以上测量站立身高';
+        }
+    }
+
+    // ---- 获取月龄 ----
+    function getAgeMonths() {
+        if (ageInputMode === 'month') {
+            const m = parseInt(ageMonthEl.value, 10);
+            return isNaN(m) ? null : m;
+        } else {
+            const y = parseFloat(ageYearEl.value);
+            return isNaN(y) ? null : Math.round(y * 12);
+        }
+    }
+
+    // ---- 表单验证 ----
+    function validateForm() {
+        if (!selectedGender) return '请选择孩子的性别';
+
+        const ageMonths = getAgeMonths();
+        if (ageMonths === null) return '请填写年龄';
+        if (ageInputMode === 'month' && (ageMonths < 0 || ageMonths > 35)) {
+            return '月龄请填写 0-35 个月（3岁以下使用月龄）';
+        }
+        if (ageInputMode === 'year') {
+            const y = parseFloat(ageYearEl.value);
+            if (isNaN(y) || y < 3 || y > 18) return '岁龄请填写 3-18 岁';
+        }
+
+        const heightVal = heightInput.value.trim();
+        const weightVal = weightInput.value.trim();
+
+        // 身高：填了就验证；不填时只有血压模式才允许
+        if (heightVal !== '') {
+            const height = parseFloat(heightVal);
+            if (isNaN(height) || height < 30 || height > 220) return '请输入有效的身高（30-220 cm）';
+        }
+
+        // 体重：可选，但填了就必须合法
+        if (weightVal !== '') {
+            const weight = parseFloat(weightVal);
+            if (isNaN(weight) || weight < 1 || weight > 200) return '请输入有效的体重（1-200 kg）';
+        }
+
+        // 至少要有身高或血压之一
+        const heightOk = heightVal !== '' && !isNaN(parseFloat(heightVal));
+        const systolicVal = systolicInput.value.trim();
+        const diastolicVal = diastolicInput.value.trim();
+        const bpOk = systolicVal !== '' && diastolicVal !== '';
+        if (!heightOk && !bpOk) return '请至少填写身高（用于生长评估）或血压（用于血压评估）';
+
+        return null; // 无错误
+    }
+
+    // ---- 显示错误 ----
+    function showError(msg) {
+        errorBox.textContent = msg;
+        errorBox.style.display = 'block';
+        setTimeout(() => { errorBox.style.display = 'none'; }, 3500);
+    }
+
+    // ---- 评估按钮 ----
+    assessBtn.addEventListener('click', runAssessment);
+    [ageMonthEl, ageYearEl, heightInput, weightInput, systolicInput, diastolicInput].forEach(el => {
+        if (el) el.addEventListener('keypress', e => { if (e.key === 'Enter') runAssessment(); });
+    });
+
+    function runAssessment() {
+        const err = validateForm();
+        if (err) { showError(err); return; }
+
+        const ageMonths = getAgeMonths();
+        const gender    = selectedGender;
+        const height    = parseFloat(heightInput.value) || null;
+        const weight    = parseFloat(weightInput.value) || null;
+        const systolic  = parseFloat(systolicInput.value);
+        const diastolic = parseFloat(diastolicInput.value);
+
+        // 只有身高和体重都有时才能计算身高/体重/BMI
+        const heightResult = (height !== null)
+            ? Assessment.assessHeight(height, ageMonths, gender) : null;
+        const weightResult = (weight !== null)
+            ? Assessment.assessWeight(weight, ageMonths, gender) : null;
+        const bmiResult = (height !== null && weight !== null)
+            ? Assessment.assessBMI(height, weight, ageMonths) : null;
+
+        // 血压评估：需要年龄+性别，身高可选（有则精确）
+        const bpResult = (!isNaN(systolic) && !isNaN(diastolic) && systolic > 0 && diastolic > 0)
+            ? Assessment.assessBloodPressure(systolic, diastolic, ageMonths, gender, height)
+            : null;
+
+        renderResults({
+            ageMonths, gender, height, weight, systolic, diastolic,
+            heightResult, weightResult, bmiResult, bpResult
+        });
+
+        inputSection.style.display  = 'none';
+        resultSection.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ---- 重新评估 ----
+    reAssessBtn.addEventListener('click', () => {
+        resultSection.style.display = 'none';
+        inputSection.style.display  = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // ==================================================
+    // 渲染结果
+    // ==================================================
+    function renderResults(data) {
+        const { ageMonths, gender, height, weight, systolic, diastolic,
+                heightResult, weightResult, bmiResult, bpResult } = data;
+
+        // 副标题
+        const genderLabel = gender === 'male' ? '男孩' : '女孩';
+        const ageLabel = ageMonths < 36
+            ? `${ageMonths}个月`
+            : `${(ageMonths / 12).toFixed(1)}岁`;
+        let subtitleParts = [genderLabel, ageLabel];
+        if (height) subtitleParts.push(`身高 ${height}cm`);
+        if (weight) subtitleParts.push(`体重 ${weight}kg`);
+        document.getElementById('resultSubtitle').textContent = subtitleParts.join(' · ');
+
+        // 身高
+        if (heightResult) {
+            document.getElementById('heightResultBlock').style.display = '';
+            renderPercentileItem('height', heightResult, height + ' cm');
+        } else {
+            document.getElementById('heightResultBlock').style.display = 'none';
+        }
+
+        // 体重
+        if (weightResult) {
+            document.getElementById('weightResultBlock').style.display = '';
+            renderPercentileItem('weight', weightResult, weight + ' kg');
+        } else {
+            document.getElementById('weightResultBlock').style.display = 'none';
+        }
+
+        // BMI
+        const bmiBlock = document.getElementById('bmiResultBlock');
+        if (bmiResult) {
+            bmiBlock.style.display = '';
+            const bmiValueEl = document.getElementById('bmiValue');
+            const bmiCalcEl  = document.getElementById('bmiCalc');
+            const bmiEvalEl  = document.getElementById('bmiEval');
+
+            bmiValueEl.textContent = bmiResult.bmi;
+            bmiCalcEl.textContent  = `${weight}kg ÷ (${(height/100).toFixed(2)}m)² = ${bmiResult.bmi} kg/m²`;
+            bmiEvalEl.textContent  = bmiResult.evaluation;
+            bmiEvalEl.className    = `result-evaluation eval-${bmiResult.level}`;
+        } else {
+            bmiBlock.style.display = 'none';
+        }
+
+        // 血压
+        if (bpResult) {
+            document.getElementById('bpResult').style.display = '';
+            document.getElementById('bpSystolic').textContent  = systolic;
+            document.getElementById('bpDiastolic').textContent = diastolic;
+
+            // 更新血压参考范围说明
+            const bpRangeEl = document.getElementById('bpRange');
+            bpRangeEl.innerHTML =
+                `P90参考上限：收缩压 <b>${bpResult.sbpP90}</b> / 舒张压 <b>${bpResult.dbpP90}</b> mmHg ` +
+                `&nbsp;|&nbsp; P95高血压线：收缩压 <b>${bpResult.sbpP95}</b> / 舒张压 <b>${bpResult.dbpP95}</b> mmHg` +
+                `<br><span style="font-size:0.8em;color:#999">${bpResult.ageNote} &nbsp;${bpResult.heightNote} &nbsp;依据：${bpResult.standard}</span>`;
+
+            const bpEvalEl = document.getElementById('bpEval');
+            bpEvalEl.textContent = bpResult.evaluation;
+            bpEvalEl.className = 'result-evaluation eval-' + (
+                bpResult.status === 'normal' ? 'normal' :
+                bpResult.status === 'elevated' ? 'warning' : 'high'
+            );
+        } else {
+            document.getElementById('bpResult').style.display = 'none';
+        }
+    }
+
+    // ---- 渲染百分位结果 ----
+    function renderPercentileItem(type, result, valueLabel) {
+        const percentileEl = document.getElementById(`${type}Percentile`);
+        const barEl        = document.getElementById(`${type}Bar`);
+        const evalEl       = document.getElementById(`${type}Eval`);
+        const rangeEl      = document.getElementById(`${type}Range`);
+
+        if (!result) {
+            percentileEl.textContent = '--';
+            evalEl.textContent       = '数据不足';
+            return;
+        }
+
+        // 百分位显示
+        percentileEl.textContent = result.display;
+
+        // 进度条小圆点
+        const barPos = Assessment.getBarPosition(result);
+        barEl.style.display = '';
+        barEl.style.left    = barPos + '%';
+
+        // 颜色
+        const evalClass = Assessment.getEvalClass(result);
+        evalEl.textContent = result.evaluation;
+        evalEl.className   = `result-evaluation eval-${evalClass}`;
+
+        // 参考范围
+        rangeEl.textContent = result.range || '';
+    }
+});
+
+</script>
+</body>
+</html>

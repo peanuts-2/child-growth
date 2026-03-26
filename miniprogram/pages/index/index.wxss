@@ -1,0 +1,154 @@
+.container {
+  padding: 30rpx;
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+
+.title {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 12rpx;
+}
+
+.subtitle {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.05);
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 30rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.card.optional {
+  opacity: 0.9;
+}
+
+.form-item {
+  margin-bottom: 30rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 16rpx;
+}
+
+.form-hint {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 20rpx;
+}
+
+.gender-select {
+  display: flex;
+  gap: 24rpx;
+}
+
+.gender-btn {
+  flex: 1;
+  height: 88rpx;
+  line-height: 88rpx;
+  text-align: center;
+  border-radius: 44rpx;
+  border: 2rpx solid #ddd;
+  font-size: 32rpx;
+  color: #666;
+  background: #fff;
+}
+
+.gender-btn.active {
+  border-color: #1890ff;
+  background: #e6f7ff;
+  color: #1890ff;
+}
+
+.age-input {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.input {
+  border: 1rpx solid #ddd;
+  border-radius: 8rpx;
+  padding: 20rpx 24rpx;
+  font-size: 32rpx;
+  background: #fafafa;
+}
+
+.input.age {
+  width: 100rpx;
+  text-align: center;
+}
+
+.input.full {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.unit {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.btn-assess {
+  width: 100%;
+  height: 96rpx;
+  line-height: 96rpx;
+  background: linear-gradient(135deg, #1890ff, #096dd9);
+  color: #fff;
+  font-size: 34rpx;
+  font-weight: bold;
+  border-radius: 48rpx;
+  border: none;
+  margin-top: 20rpx;
+  margin-bottom: 40rpx;
+}
+
+.btn-assess[disabled] {
+  background: #ccc;
+  color: #fff;
+}
+
+.info {
+  padding: 24rpx;
+  background: #f9f9f9;
+  border-radius: 12rpx;
+}
+
+.info-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #666;
+  margin-bottom: 12rpx;
+}
+
+.info-text {
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.6;
+  margin-bottom: 8rpx;
+}
