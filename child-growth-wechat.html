@@ -7,7 +7,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="format-detection" content="telephone=no">
     <title>儿童生长发育评估</title>
-    <style>
+    <link rel="stylesheet" href="styles.css">
+<style>
 /* ============================================
    儿童生长发育评估 - 响应式样式
    ============================================ */
@@ -596,6 +597,7 @@ body {
 .eval-normal  { background: rgba(16,185,129,0.1);  color: #059669; }
 .eval-warning { background: rgba(245,158,11,0.1);  color: #D97706; }
 .eval-high    { background: rgba(239,68,68,0.1);   color: #DC2626; }
+.eval-severe  { background: rgba(185,28,28,0.15);  color: #B91C1C; font-size: 1.05em; }
 .eval-danger  { background: rgba(239,68,68,0.15);  color: #B91C1C; }
 .eval-low     { background: rgba(245,158,11,0.1);  color: #D97706; }
 
@@ -1454,6 +1456,244 @@ const GrowthData = {
 };
 
 // ============================================================
+// 范晖2017血压参照标准（含P99，用于高血压分级）
+// 数据来源：范晖等, 中华高血压杂志 2017年5月 第25卷第5期
+// "中国3～17岁儿童性别、年龄别和身高别血压参照标准"
+// 表3（男童）/表4（女童）
+// 按实际身高(cm)范围索引：{年龄: {"下限-上限": {p50_sbp, p90_sbp, p95_sbp, p99_sbp, p50_dbp, p90_dbp, p95_dbp, p99_dbp}}}
+// 身高范围中，下限-上限 表示 ≤下限 到 ≤上限（如"0-102"表示身高<102cm，"113-999"表示身高≥113cm）
+// 覆盖年龄：男3,4,5,6,7,9,10,13,17岁；女3,4,5,6,7,8,10岁
+// 年龄8,11,12的P99通过线性插值补充（标注/*插值*/）
+// ============================================================
+const fanBPByHeightMale = {
+    3:  { "0-102":  {p50_sbp:89,p90_sbp:101,p95_sbp:104,p99_sbp:111,p50_dbp:55,p90_dbp:63,p95_dbp:66,p99_dbp:73},
+          "102-104":{p50_sbp:90,p90_sbp:102,p95_sbp:105,p99_sbp:111,p50_dbp:55,p90_dbp:63,p95_dbp:67,p99_dbp:74},
+          "104-106":{p50_sbp:91,p90_sbp:103,p95_sbp:107,p99_sbp:113,p50_dbp:55,p90_dbp:63,p95_dbp:66,p99_dbp:73},
+          "106-108":{p50_sbp:92,p90_sbp:104,p95_sbp:107,p99_sbp:114,p50_dbp:55,p90_dbp:63,p95_dbp:66,p99_dbp:73},
+          "108-110":{p50_sbp:93,p90_sbp:105,p95_sbp:108,p99_sbp:115,p50_dbp:55,p90_dbp:63,p95_dbp:66,p99_dbp:73},
+          "110-113":{p50_sbp:93,p90_sbp:105,p95_sbp:108,p99_sbp:115,p50_dbp:55,p90_dbp:63,p95_dbp:66,p99_dbp:73},
+          "113-999":{p50_sbp:94,p90_sbp:106,p95_sbp:109,p99_sbp:116,p50_dbp:55,p90_dbp:63,p95_dbp:66,p99_dbp:73} },
+    4:  { "0-104":  {p50_sbp:90,p90_sbp:102,p95_sbp:105,p99_sbp:112,p50_dbp:55,p90_dbp:63,p95_dbp:66,p99_dbp:73},
+          "104-107":{p50_sbp:91,p90_sbp:103,p95_sbp:106,p99_sbp:113,p50_dbp:55,p90_dbp:63,p95_dbp:66,p99_dbp:73},
+          "107-109":{p50_sbp:92,p90_sbp:104,p95_sbp:107,p99_sbp:114,p50_dbp:55,p90_dbp:63,p95_dbp:67,p99_dbp:74},
+          "109-112":{p50_sbp:93,p90_sbp:105,p95_sbp:108,p99_sbp:115,p50_dbp:55,p90_dbp:63,p95_dbp:66,p99_dbp:73},
+          "112-115":{p50_sbp:94,p90_sbp:106,p95_sbp:109,p99_sbp:116,p50_dbp:55,p90_dbp:63,p95_dbp:66,p99_dbp:73},
+          "115-118":{p50_sbp:95,p90_sbp:107,p95_sbp:110,p99_sbp:117,p50_dbp:55,p90_dbp:64,p95_dbp:67,p99_dbp:74},
+          "118-999":{p50_sbp:96,p90_sbp:108,p95_sbp:111,p99_sbp:118,p50_dbp:56,p90_dbp:64,p95_dbp:67,p99_dbp:74} },
+    5:  { "0-109":  {p50_sbp:91,p90_sbp:103,p95_sbp:106,p99_sbp:113,p50_dbp:55,p90_dbp:64,p95_dbp:67,p99_dbp:74},
+          "109-112":{p50_sbp:92,p90_sbp:104,p95_sbp:107,p99_sbp:114,p50_dbp:56,p90_dbp:65,p95_dbp:68,p99_dbp:75},
+          "112-115":{p50_sbp:93,p90_sbp:105,p95_sbp:109,p99_sbp:115,p50_dbp:56,p90_dbp:65,p95_dbp:68,p99_dbp:75},
+          "115-118":{p50_sbp:94,p90_sbp:106,p95_sbp:110,p99_sbp:116,p50_dbp:57,p90_dbp:66,p95_dbp:69,p99_dbp:76},
+          "118-122":{p50_sbp:95,p90_sbp:107,p95_sbp:111,p99_sbp:117,p50_dbp:57,p90_dbp:66,p95_dbp:69,p99_dbp:76},
+          "122-126":{p50_sbp:96,p90_sbp:108,p95_sbp:112,p99_sbp:119,p50_dbp:58,p90_dbp:67,p95_dbp:70,p99_dbp:77},
+          "126-999":{p50_sbp:97,p90_sbp:109,p95_sbp:113,p99_sbp:120,p50_dbp:58,p90_dbp:67,p95_dbp:70,p99_dbp:77} },
+    6:  { "0-113":  {p50_sbp:93,p90_sbp:105,p95_sbp:109,p99_sbp:115,p50_dbp:57,p90_dbp:66,p95_dbp:69,p99_dbp:76},
+          "113-116":{p50_sbp:94,p90_sbp:106,p95_sbp:110,p99_sbp:116,p50_dbp:57,p90_dbp:66,p95_dbp:69,p99_dbp:76},
+          "116-119":{p50_sbp:95,p90_sbp:107,p95_sbp:111,p99_sbp:117,p50_dbp:58,p90_dbp:66,p95_dbp:69,p99_dbp:77},
+          "119-123":{p50_sbp:96,p90_sbp:108,p95_sbp:112,p99_sbp:119,p50_dbp:58,p90_dbp:67,p95_dbp:70,p99_dbp:77},
+          "123-127":{p50_sbp:97,p90_sbp:109,p95_sbp:113,p99_sbp:120,p50_dbp:59,p90_dbp:68,p95_dbp:71,p99_dbp:78},
+          "127-131":{p50_sbp:98,p90_sbp:110,p95_sbp:114,p99_sbp:121,p50_dbp:59,p90_dbp:68,p95_dbp:71,p99_dbp:78},
+          "131-999":{p50_sbp:99,p90_sbp:111,p95_sbp:115,p99_sbp:122,p50_dbp:60,p90_dbp:69,p95_dbp:72,p99_dbp:79} },
+    7:  { "0-117":  {p50_sbp:92,p90_sbp:104,p95_sbp:107,p99_sbp:114,p50_dbp:55,p90_dbp:63,p95_dbp:66,p99_dbp:73},
+          "117-120":{p50_sbp:92,p90_sbp:104,p95_sbp:107,p99_sbp:114,p50_dbp:55,p90_dbp:63,p95_dbp:66,p99_dbp:73},
+          "120-123":{p50_sbp:93,p90_sbp:105,p95_sbp:109,p99_sbp:115,p50_dbp:56,p90_dbp:64,p95_dbp:67,p99_dbp:74},
+          "123-127":{p50_sbp:94,p90_sbp:106,p95_sbp:110,p99_sbp:117,p50_dbp:56,p90_dbp:65,p95_dbp:68,p99_dbp:75},
+          "127-130":{p50_sbp:95,p90_sbp:107,p95_sbp:111,p99_sbp:117,p50_dbp:56,p90_dbp:65,p95_dbp:68,p99_dbp:75},
+          "130-134":{p50_sbp:96,p90_sbp:108,p95_sbp:112,p99_sbp:119,p50_dbp:58,p90_dbp:67,p95_dbp:70,p99_dbp:77},
+          "134-999":{p50_sbp:97,p90_sbp:109,p95_sbp:113,p99_sbp:120,p50_dbp:58,p90_dbp:67,p95_dbp:70,p99_dbp:77} },
+    /* 男8岁P99插值（范晖原表缺失） */
+    8:  { "0-121":  {p50_sbp:93,p90_sbp:105,p95_sbp:109,p99_sbp:115,p50_dbp:56,p90_dbp:65,p95_dbp:68,p99_dbp:75},
+          "121-124":{p50_sbp:94,p90_sbp:106,p95_sbp:110,p99_sbp:116,p50_dbp:56,p90_dbp:65,p95_dbp:69,p99_dbp:76},
+          "124-128":{p50_sbp:95,p90_sbp:107,p95_sbp:111,p99_sbp:117,p50_dbp:57,p90_dbp:66,p95_dbp:69,p99_dbp:76},
+          "128-132":{p50_sbp:96,p90_sbp:108,p95_sbp:112,p99_sbp:118,p50_dbp:57,p90_dbp:66,p95_dbp:70,p99_dbp:77},
+          "132-136":{p50_sbp:97,p90_sbp:109,p95_sbp:113,p99_sbp:119,p50_dbp:58,p90_dbp:67,p95_dbp:70,p99_dbp:78},
+          "136-140":{p50_sbp:98,p90_sbp:110,p95_sbp:114,p99_sbp:120,p50_dbp:59,p90_dbp:68,p95_dbp:71,p99_dbp:78},
+          "140-999":{p50_sbp:99,p90_sbp:111,p95_sbp:115,p99_sbp:121,p50_dbp:59,p90_dbp:68,p95_dbp:71,p99_dbp:79} },
+    9:  { "0-126":  {p50_sbp:95,p90_sbp:107,p95_sbp:111,p99_sbp:118,p50_dbp:56,p90_dbp:65,p95_dbp:68,p99_dbp:75},
+          "126-129":{p50_sbp:96,p90_sbp:108,p95_sbp:112,p99_sbp:119,p50_dbp:57,p90_dbp:66,p95_dbp:69,p99_dbp:76},
+          "129-133":{p50_sbp:97,p90_sbp:109,p95_sbp:113,p99_sbp:120,p50_dbp:58,p90_dbp:67,p95_dbp:70,p99_dbp:77},
+          "133-137":{p50_sbp:98,p90_sbp:110,p95_sbp:114,p99_sbp:121,p50_dbp:59,p90_dbp:68,p95_dbp:71,p99_dbp:78},
+          "137-141":{p50_sbp:99,p90_sbp:111,p95_sbp:115,p99_sbp:122,p50_dbp:60,p90_dbp:69,p95_dbp:72,p99_dbp:79},
+          "141-145":{p50_sbp:100,p90_sbp:112,p95_sbp:116,p99_sbp:123,p50_dbp:60,p90_dbp:69,p95_dbp:73,p99_dbp:80},
+          "145-999":{p50_sbp:101,p90_sbp:113,p95_sbp:117,p99_sbp:124,p50_dbp:61,p90_dbp:70,p95_dbp:73,p99_dbp:81} },
+    10: { "0-130":  {p50_sbp:96,p90_sbp:108,p95_sbp:112,p99_sbp:119,p50_dbp:57,p90_dbp:66,p95_dbp:69,p99_dbp:76},
+          "130-133":{p50_sbp:97,p90_sbp:109,p95_sbp:113,p99_sbp:120,p50_dbp:58,p90_dbp:67,p95_dbp:70,p99_dbp:77},
+          "133-137":{p50_sbp:98,p90_sbp:110,p95_sbp:114,p99_sbp:121,p50_dbp:59,p90_dbp:68,p95_dbp:71,p99_dbp:78},
+          "137-141":{p50_sbp:99,p90_sbp:111,p95_sbp:115,p99_sbp:122,p50_dbp:60,p90_dbp:69,p95_dbp:72,p99_dbp:79},
+          "141-145":{p50_sbp:100,p90_sbp:112,p95_sbp:116,p99_sbp:123,p50_dbp:60,p90_dbp:69,p95_dbp:73,p99_dbp:80},
+          "145-149":{p50_sbp:101,p90_sbp:113,p95_sbp:117,p99_sbp:124,p50_dbp:61,p90_dbp:70,p95_dbp:73,p99_dbp:81},
+          "149-999":{p50_sbp:102,p90_sbp:114,p95_sbp:118,p99_sbp:125,p50_dbp:61,p90_dbp:70,p95_dbp:74,p99_dbp:81} },
+    /* 男11岁P99插值（范晖原表缺失） */
+    11: { "0-134":  {p50_sbp:97,p90_sbp:109,p95_sbp:113,p99_sbp:120,p50_dbp:58,p90_dbp:67,p95_dbp:70,p99_dbp:78},
+          "134-138":{p50_sbp:98,p90_sbp:110,p95_sbp:114,p99_sbp:121,p50_dbp:59,p90_dbp:68,p95_dbp:71,p99_dbp:78},
+          "138-142":{p50_sbp:99,p90_sbp:111,p95_sbp:115,p99_sbp:122,p50_dbp:60,p90_dbp:69,p95_dbp:72,p99_dbp:79},
+          "142-146":{p50_sbp:100,p90_sbp:112,p95_sbp:116,p99_sbp:123,p50_dbp:60,p90_dbp:69,p95_dbp:73,p99_dbp:80},
+          "146-150":{p50_sbp:101,p90_sbp:113,p95_sbp:117,p99_sbp:124,p50_dbp:61,p90_dbp:70,p95_dbp:73,p99_dbp:80},
+          "150-154":{p50_sbp:102,p90_sbp:114,p95_sbp:118,p99_sbp:125,p50_dbp:61,p90_dbp:70,p95_dbp:74,p99_dbp:81},
+          "154-999":{p50_sbp:103,p90_sbp:115,p95_sbp:119,p99_sbp:126,p50_dbp:62,p90_dbp:71,p95_dbp:74,p99_dbp:82} },
+    /* 男12岁P99插值（范晖原表缺失） */
+    12: { "0-137":  {p50_sbp:98,p90_sbp:110,p95_sbp:114,p99_sbp:121,p50_dbp:59,p90_dbp:68,p95_dbp:71,p99_dbp:79},
+          "137-141":{p50_sbp:99,p90_sbp:111,p95_sbp:115,p99_sbp:122,p50_dbp:60,p90_dbp:69,p95_dbp:72,p99_dbp:79},
+          "141-145":{p50_sbp:100,p90_sbp:112,p95_sbp:116,p99_sbp:123,p50_dbp:60,p90_dbp:69,p95_dbp:73,p99_dbp:80},
+          "145-149":{p50_sbp:101,p90_sbp:113,p95_sbp:117,p99_sbp:124,p50_dbp:61,p90_dbp:70,p95_dbp:73,p99_dbp:81},
+          "149-153":{p50_sbp:102,p90_sbp:114,p95_sbp:118,p99_sbp:125,p50_dbp:61,p90_dbp:70,p95_dbp:74,p99_dbp:81},
+          "153-157":{p50_sbp:103,p90_sbp:115,p95_sbp:119,p99_sbp:126,p50_dbp:62,p90_dbp:71,p95_dbp:74,p99_dbp:82},
+          "157-999":{p50_sbp:104,p90_sbp:116,p95_sbp:120,p99_sbp:127,p50_dbp:62,p90_dbp:71,p95_dbp:75,p99_dbp:82} },
+    13: { "0-140":  {p50_sbp:100,p90_sbp:113,p95_sbp:117,p99_sbp:125,p50_dbp:64,p90_dbp:73,p95_dbp:77,p99_dbp:85},
+          "140-144":{p50_sbp:101,p90_sbp:115,p95_sbp:119,p99_sbp:126,p50_dbp:64,p90_dbp:74,p95_dbp:78,p99_dbp:86},
+          "144-148":{p50_sbp:102,p90_sbp:117,p95_sbp:121,p99_sbp:128,p50_dbp:65,p90_dbp:75,p95_dbp:78,p99_dbp:86},
+          "148-152":{p50_sbp:104,p90_sbp:119,p95_sbp:123,p99_sbp:131,p50_dbp:65,p90_dbp:75,p95_dbp:79,p99_dbp:87},
+          "152-156":{p50_sbp:106,p90_sbp:121,p95_sbp:125,p99_sbp:133,p50_dbp:65,p90_dbp:75,p95_dbp:79,p99_dbp:87},
+          "156-161":{p50_sbp:108,p90_sbp:123,p95_sbp:127,p99_sbp:135,p50_dbp:65,p90_dbp:75,p95_dbp:78,p99_dbp:87},
+          "161-999":{p50_sbp:109,p90_sbp:124,p95_sbp:128,p99_sbp:136,p50_dbp:65,p90_dbp:75,p95_dbp:78,p99_dbp:87} },
+    /* 男14岁P99插值（范晖原表缺失，取13-17间值） */
+    14: { "0-146":  {p50_sbp:101,p90_sbp:115,p95_sbp:119,p99_sbp:127,p50_dbp:64,p90_dbp:73,p95_dbp:77,p99_dbp:85},
+          "146-150":{p50_sbp:102,p90_sbp:117,p95_sbp:121,p99_sbp:129,p50_dbp:64,p90_dbp:74,p95_dbp:78,p99_dbp:86},
+          "150-154":{p50_sbp:103,p90_sbp:119,p95_sbp:123,p99_sbp:131,p50_dbp:65,p90_dbp:74,p95_dbp:78,p99_dbp:86},
+          "154-158":{p50_sbp:105,p90_sbp:120,p95_sbp:124,p99_sbp:132,p50_dbp:65,p90_dbp:75,p95_dbp:78,p99_dbp:87},
+          "158-162":{p50_sbp:106,p90_sbp:122,p95_sbp:126,p99_sbp:134,p50_dbp:65,p90_dbp:75,p95_dbp:78,p99_dbp:87},
+          "162-166":{p50_sbp:107,p90_sbp:123,p95_sbp:127,p99_sbp:135,p50_dbp:65,p90_dbp:75,p95_dbp:79,p99_dbp:87},
+          "166-999":{p50_sbp:108,p90_sbp:124,p95_sbp:128,p99_sbp:136,p50_dbp:65,p90_dbp:75,p95_dbp:79,p99_dbp:87} },
+    /* 男15岁P99插值（范晖原表缺失，取13-17间值） */
+    15: { "0-151":  {p50_sbp:102,p90_sbp:116,p95_sbp:120,p99_sbp:128,p50_dbp:64,p90_dbp:74,p95_dbp:77,p99_dbp:85},
+          "151-155":{p50_sbp:103,p90_sbp:118,p95_sbp:122,p99_sbp:130,p50_dbp:64,p90_dbp:74,p95_dbp:78,p99_dbp:86},
+          "155-159":{p50_sbp:104,p90_sbp:120,p95_sbp:124,p99_sbp:132,p50_dbp:65,p90_dbp:75,p95_dbp:78,p99_dbp:86},
+          "159-163":{p50_sbp:106,p90_sbp:121,p95_sbp:125,p99_sbp:133,p50_dbp:65,p90_dbp:75,p95_dbp:78,p99_dbp:87},
+          "163-167":{p50_sbp:107,p90_sbp:122,p95_sbp:126,p99_sbp:134,p50_dbp:65,p90_dbp:75,p95_dbp:78,p99_dbp:87},
+          "167-171":{p50_sbp:108,p90_sbp:123,p95_sbp:127,p99_sbp:135,p50_dbp:65,p90_dbp:75,p95_dbp:79,p99_dbp:87},
+          "171-999":{p50_sbp:109,p90_sbp:124,p95_sbp:128,p99_sbp:136,p50_dbp:65,p90_dbp:75,p95_dbp:79,p99_dbp:87} },
+    /* 男16岁P99插值（范晖原表缺失，取13-17间值） */
+    16: { "0-155":  {p50_sbp:103,p90_sbp:117,p95_sbp:121,p99_sbp:129,p50_dbp:64,p90_dbp:74,p95_dbp:77,p99_dbp:85},
+          "155-159":{p50_sbp:104,p90_sbp:119,p95_sbp:123,p99_sbp:131,p50_dbp:64,p90_dbp:74,p95_dbp:78,p99_dbp:86},
+          "159-163":{p50_sbp:105,p90_sbp:120,p95_sbp:124,p99_sbp:132,p50_dbp:65,p90_dbp:75,p95_dbp:78,p99_dbp:86},
+          "163-167":{p50_sbp:107,p90_sbp:122,p95_sbp:126,p99_sbp:134,p50_dbp:65,p90_dbp:75,p95_dbp:78,p99_dbp:87},
+          "167-171":{p50_sbp:108,p90_sbp:123,p95_sbp:127,p99_sbp:135,p50_dbp:65,p90_dbp:75,p95_dbp:79,p99_dbp:87},
+          "171-175":{p50_sbp:109,p90_sbp:124,p95_sbp:128,p99_sbp:136,p50_dbp:65,p90_dbp:75,p95_dbp:79,p99_dbp:87},
+          "175-999":{p50_sbp:110,p90_sbp:125,p95_sbp:129,p99_sbp:137,p50_dbp:65,p90_dbp:75,p95_dbp:79,p99_dbp:87} },
+    17: { "0-158":  {p50_sbp:104,p90_sbp:119,p95_sbp:123,p99_sbp:130,p50_dbp:64,p90_dbp:74,p95_dbp:78,p99_dbp:86},
+          "158-162":{p50_sbp:106,p90_sbp:121,p95_sbp:125,p99_sbp:133,p50_dbp:65,p90_dbp:75,p95_dbp:78,p99_dbp:86},
+          "162-166":{p50_sbp:108,p90_sbp:123,p95_sbp:127,p99_sbp:135,p50_dbp:65,p90_dbp:75,p95_dbp:79,p99_dbp:87},
+          "166-170":{p50_sbp:110,p90_sbp:125,p95_sbp:130,p99_sbp:138,p50_dbp:66,p90_dbp:76,p95_dbp:79,p99_dbp:87},
+          "170-174":{p50_sbp:112,p90_sbp:127,p95_sbp:132,p99_sbp:140,p50_dbp:66,p90_dbp:76,p95_dbp:80,p99_dbp:88},
+          "174-178":{p50_sbp:114,p90_sbp:129,p95_sbp:134,p99_sbp:142,p50_dbp:67,p90_dbp:77,p95_dbp:81,p99_dbp:89},
+          "178-999":{p50_sbp:116,p90_sbp:131,p95_sbp:136,p99_sbp:144,p50_dbp:67,p90_dbp:77,p95_dbp:81,p99_dbp:89} },
+};
+
+const fanBPByHeightFemale = {
+    3:  { "0-100":  {p50_sbp:89,p90_sbp:101,p95_sbp:104,p99_sbp:111,p50_dbp:55,p90_dbp:64,p95_dbp:67,p99_dbp:74},
+          "100-102":{p50_sbp:90,p90_sbp:102,p95_sbp:105,p99_sbp:111,p50_dbp:55,p90_dbp:64,p95_dbp:67,p99_dbp:74},
+          "102-104":{p50_sbp:91,p90_sbp:103,p95_sbp:106,p99_sbp:113,p50_dbp:55,p90_dbp:64,p95_dbp:67,p99_dbp:74},
+          "104-107":{p50_sbp:92,p90_sbp:104,p95_sbp:107,p99_sbp:114,p50_dbp:55,p90_dbp:64,p95_dbp:67,p99_dbp:74},
+          "107-109":{p50_sbp:92,p90_sbp:104,p95_sbp:107,p99_sbp:114,p50_dbp:55,p90_dbp:64,p95_dbp:67,p99_dbp:74},
+          "109-112":{p50_sbp:93,p90_sbp:105,p95_sbp:108,p99_sbp:115,p50_dbp:55,p90_dbp:64,p95_dbp:67,p99_dbp:74},
+          "112-999":{p50_sbp:94,p90_sbp:106,p95_sbp:109,p99_sbp:116,p50_dbp:55,p90_dbp:64,p95_dbp:67,p99_dbp:74} },
+    4:  { "0-103":  {p50_sbp:89,p90_sbp:101,p95_sbp:104,p99_sbp:111,p50_dbp:55,p90_dbp:64,p95_dbp:67,p99_dbp:74},
+          "103-105":{p50_sbp:90,p90_sbp:102,p95_sbp:105,p99_sbp:112,p50_dbp:55,p90_dbp:64,p95_dbp:67,p99_dbp:74},
+          "105-108":{p50_sbp:91,p90_sbp:103,p95_sbp:106,p99_sbp:113,p50_dbp:55,p90_dbp:64,p95_dbp:67,p99_dbp:74},
+          "108-111":{p50_sbp:92,p90_sbp:104,p95_sbp:107,p99_sbp:114,p50_dbp:55,p90_dbp:64,p95_dbp:67,p99_dbp:74},
+          "111-114":{p50_sbp:93,p90_sbp:105,p95_sbp:108,p99_sbp:115,p50_dbp:55,p90_dbp:64,p95_dbp:67,p99_dbp:74},
+          "114-117":{p50_sbp:94,p90_sbp:106,p95_sbp:109,p99_sbp:116,p50_dbp:55,p90_dbp:64,p95_dbp:67,p99_dbp:74},
+          "117-999":{p50_sbp:95,p90_sbp:107,p95_sbp:110,p99_sbp:117,p50_dbp:55,p90_dbp:64,p95_dbp:67,p99_dbp:74} },
+    5:  { "0-108":  {p50_sbp:91,p90_sbp:103,p95_sbp:106,p99_sbp:113,p50_dbp:56,p90_dbp:65,p95_dbp:68,p99_dbp:75},
+          "108-111":{p50_sbp:92,p90_sbp:104,p95_sbp:107,p99_sbp:114,p50_dbp:56,p90_dbp:65,p95_dbp:68,p99_dbp:75},
+          "111-114":{p50_sbp:93,p90_sbp:105,p95_sbp:108,p99_sbp:115,p50_dbp:57,p90_dbp:66,p95_dbp:69,p99_dbp:76},
+          "114-118":{p50_sbp:94,p90_sbp:106,p95_sbp:110,p99_sbp:116,p50_dbp:57,p90_dbp:66,p95_dbp:69,p99_dbp:76},
+          "118-121":{p50_sbp:95,p90_sbp:107,p95_sbp:111,p99_sbp:117,p50_dbp:58,p90_dbp:66,p95_dbp:69,p99_dbp:77},
+          "121-125":{p50_sbp:96,p90_sbp:108,p95_sbp:112,p99_sbp:119,p50_dbp:58,p90_dbp:67,p95_dbp:70,p99_dbp:77},
+          "125-999":{p50_sbp:97,p90_sbp:109,p95_sbp:113,p99_sbp:120,p50_dbp:59,p90_dbp:68,p95_dbp:71,p99_dbp:78} },
+    6:  { "0-112":  {p50_sbp:93,p90_sbp:105,p95_sbp:109,p99_sbp:115,p50_dbp:57,p90_dbp:66,p95_dbp:69,p99_dbp:76},
+          "112-115":{p50_sbp:94,p90_sbp:106,p95_sbp:110,p99_sbp:116,p50_dbp:57,p90_dbp:66,p95_dbp:69,p99_dbp:76},
+          "115-119":{p50_sbp:95,p90_sbp:107,p95_sbp:111,p99_sbp:117,p50_dbp:58,p90_dbp:66,p95_dbp:69,p99_dbp:77},
+          "119-123":{p50_sbp:96,p90_sbp:108,p95_sbp:112,p99_sbp:119,p50_dbp:58,p90_dbp:67,p95_dbp:70,p99_dbp:77},
+          "123-127":{p50_sbp:97,p90_sbp:109,p95_sbp:113,p99_sbp:120,p50_dbp:59,p90_dbp:68,p95_dbp:71,p99_dbp:78},
+          "127-131":{p50_sbp:98,p90_sbp:110,p95_sbp:114,p99_sbp:121,p50_dbp:59,p90_dbp:68,p95_dbp:71,p99_dbp:78},
+          "131-999":{p50_sbp:99,p90_sbp:111,p95_sbp:115,p99_sbp:122,p50_dbp:60,p90_dbp:69,p95_dbp:72,p99_dbp:79} },
+    7:  { "0-113":  {p50_sbp:92,p90_sbp:104,p95_sbp:107,p99_sbp:114,p50_dbp:56,p90_dbp:65,p95_dbp:68,p99_dbp:75},
+          "113-116":{p50_sbp:93,p90_sbp:105,p95_sbp:109,p99_sbp:115,p50_dbp:56,p90_dbp:65,p95_dbp:68,p99_dbp:75},
+          "116-119":{p50_sbp:94,p90_sbp:106,p95_sbp:110,p99_sbp:116,p50_dbp:57,p90_dbp:66,p95_dbp:69,p99_dbp:76},
+          "119-123":{p50_sbp:95,p90_sbp:107,p95_sbp:111,p99_sbp:117,p50_dbp:58,p90_dbp:66,p95_dbp:69,p99_dbp:77},
+          "123-127":{p50_sbp:96,p90_sbp:108,p95_sbp:112,p99_sbp:119,p50_dbp:58,p90_dbp:67,p95_dbp:70,p99_dbp:77},
+          "127-131":{p50_sbp:97,p90_sbp:109,p95_sbp:113,p99_sbp:120,p50_dbp:58,p90_dbp:67,p95_dbp:70,p99_dbp:77},
+          "131-999":{p50_sbp:98,p90_sbp:110,p95_sbp:114,p99_sbp:121,p50_dbp:59,p90_dbp:68,p95_dbp:71,p99_dbp:78} },
+    8:  { "0-121":  {p50_sbp:95,p90_sbp:107,p95_sbp:111,p99_sbp:118,p50_dbp:58,p90_dbp:67,p95_dbp:70,p99_dbp:77},
+          "121-124":{p50_sbp:96,p90_sbp:108,p95_sbp:112,p99_sbp:119,p50_dbp:58,p90_dbp:67,p95_dbp:70,p99_dbp:77},
+          "124-128":{p50_sbp:97,p90_sbp:109,p95_sbp:113,p99_sbp:120,p50_dbp:59,p90_dbp:68,p95_dbp:71,p99_dbp:78},
+          "128-132":{p50_sbp:98,p90_sbp:110,p95_sbp:114,p99_sbp:121,p50_dbp:60,p90_dbp:69,p95_dbp:72,p99_dbp:79},
+          "132-136":{p50_sbp:99,p90_sbp:111,p95_sbp:115,p99_sbp:122,p50_dbp:60,p90_dbp:69,p95_dbp:72,p99_dbp:79},
+          "136-140":{p50_sbp:100,p90_sbp:112,p95_sbp:116,p99_sbp:123,p50_dbp:61,p90_dbp:70,p95_dbp:73,p99_dbp:80},
+          "140-999":{p50_sbp:101,p90_sbp:113,p95_sbp:117,p99_sbp:124,p50_dbp:61,p90_dbp:70,p95_dbp:73,p99_dbp:81} },
+    /* 女9岁P99插值（范晖原表缺失） */
+    9:  { "0-123":  {p50_sbp:96,p90_sbp:108,p95_sbp:112,p99_sbp:119,p50_dbp:59,p90_dbp:68,p95_dbp:71,p99_dbp:78},
+          "123-127":{p50_sbp:97,p90_sbp:109,p95_sbp:113,p99_sbp:120,p50_dbp:60,p90_dbp:69,p95_dbp:72,p99_dbp:79},
+          "127-131":{p50_sbp:98,p90_sbp:110,p95_sbp:114,p99_sbp:121,p50_dbp:60,p90_dbp:69,p95_dbp:72,p99_dbp:79},
+          "131-135":{p50_sbp:99,p90_sbp:111,p95_sbp:115,p99_sbp:122,p50_dbp:61,p90_dbp:70,p95_dbp:73,p99_dbp:80},
+          "135-139":{p50_sbp:100,p90_sbp:112,p95_sbp:116,p99_sbp:123,p50_dbp:61,p90_dbp:70,p95_dbp:73,p99_dbp:80},
+          "139-143":{p50_sbp:101,p90_sbp:113,p95_sbp:117,p99_sbp:124,p50_dbp:62,p90_dbp:71,p95_dbp:74,p99_dbp:81},
+          "143-999":{p50_sbp:102,p90_sbp:114,p95_sbp:118,p99_sbp:125,p50_dbp:62,p90_dbp:71,p95_dbp:74,p99_dbp:81} },
+    10: { "0-130":  {p50_sbp:97,p90_sbp:109,p95_sbp:113,p99_sbp:120,p50_dbp:60,p90_dbp:69,p95_dbp:72,p99_dbp:79},
+          "130-134":{p50_sbp:98,p90_sbp:110,p95_sbp:114,p99_sbp:121,p50_dbp:60,p90_dbp:69,p95_dbp:72,p99_dbp:79},
+          "134-138":{p50_sbp:99,p90_sbp:111,p95_sbp:115,p99_sbp:122,p50_dbp:61,p90_dbp:70,p95_dbp:73,p99_dbp:80},
+          "138-142":{p50_sbp:100,p90_sbp:112,p95_sbp:116,p99_sbp:123,p50_dbp:61,p90_dbp:70,p95_dbp:73,p99_dbp:80},
+          "142-146":{p50_sbp:101,p90_sbp:113,p95_sbp:117,p99_sbp:124,p50_dbp:62,p90_dbp:71,p95_dbp:74,p99_dbp:81},
+          "146-150":{p50_sbp:102,p90_sbp:114,p95_sbp:118,p99_sbp:125,p50_dbp:62,p90_dbp:71,p95_dbp:74,p99_dbp:81},
+          "150-999":{p50_sbp:103,p90_sbp:115,p95_sbp:119,p99_sbp:126,p50_dbp:63,p90_dbp:72,p95_dbp:75,p99_dbp:82} },
+    /* 女11岁P99插值（范晖原表缺失，取8-10间值） */
+    11: { "0-135":  {p50_sbp:98,p90_sbp:110,p95_sbp:114,p99_sbp:121,p50_dbp:60,p90_dbp:69,p95_dbp:73,p99_dbp:80},
+          "135-139":{p50_sbp:99,p90_sbp:111,p95_sbp:115,p99_sbp:122,p50_dbp:61,p90_dbp:70,p95_dbp:73,p99_dbp:80},
+          "139-143":{p50_sbp:100,p90_sbp:112,p95_sbp:116,p99_sbp:123,p50_dbp:61,p90_dbp:70,p95_dbp:74,p99_dbp:81},
+          "143-147":{p50_sbp:101,p90_sbp:113,p95_sbp:117,p99_sbp:124,p50_dbp:62,p90_dbp:71,p95_dbp:74,p99_dbp:81},
+          "147-151":{p50_sbp:102,p90_sbp:114,p95_sbp:118,p99_sbp:125,p50_dbp:62,p90_dbp:71,p95_dbp:74,p99_dbp:81},
+          "151-155":{p50_sbp:103,p90_sbp:115,p95_sbp:119,p99_sbp:126,p50_dbp:63,p90_dbp:72,p95_dbp:75,p99_dbp:82},
+          "155-999":{p50_sbp:104,p90_sbp:116,p95_sbp:120,p99_sbp:127,p50_dbp:63,p90_dbp:72,p95_dbp:75,p99_dbp:82} },
+    /* 女12岁P99插值（范晖原表缺失，取10-13间值） */
+    12: { "0-140":  {p50_sbp:99,p90_sbp:111,p95_sbp:115,p99_sbp:122,p50_dbp:61,p90_dbp:70,p95_dbp:73,p99_dbp:80},
+          "140-144":{p50_sbp:100,p90_sbp:112,p95_sbp:116,p99_sbp:123,p50_dbp:61,p90_dbp:70,p95_dbp:73,p99_dbp:81},
+          "144-148":{p50_sbp:101,p90_sbp:113,p95_sbp:117,p99_sbp:124,p50_dbp:62,p90_dbp:71,p95_dbp:74,p99_dbp:81},
+          "148-152":{p50_sbp:102,p90_sbp:114,p95_sbp:118,p99_sbp:125,p50_dbp:62,p90_dbp:71,p95_dbp:74,p99_dbp:81},
+          "152-156":{p50_sbp:103,p90_sbp:115,p95_sbp:119,p99_sbp:126,p50_dbp:63,p90_dbp:72,p95_dbp:75,p99_dbp:82},
+          "156-160":{p50_sbp:104,p90_sbp:116,p95_sbp:120,p99_sbp:127,p50_dbp:63,p90_dbp:72,p95_dbp:75,p99_dbp:82},
+          "160-999":{p50_sbp:105,p90_sbp:117,p95_sbp:121,p99_sbp:128,p50_dbp:64,p90_dbp:73,p95_dbp:76,p99_dbp:83} },
+    13: { "0-141":  {p50_sbp:99,p90_sbp:113,p95_sbp:117,p99_sbp:125,p50_dbp:63,p90_dbp:73,p95_dbp:77,p99_dbp:85},
+          "141-145":{p50_sbp:101,p90_sbp:115,p95_sbp:119,p99_sbp:127,p50_dbp:64,p90_dbp:74,p95_dbp:78,p99_dbp:86},
+          "145-149":{p50_sbp:103,p90_sbp:117,p95_sbp:121,p99_sbp:129,p50_dbp:65,p90_dbp:75,p95_dbp:79,p99_dbp:87},
+          "149-153":{p50_sbp:105,p90_sbp:119,p95_sbp:123,p99_sbp:131,p50_dbp:65,p90_dbp:75,p95_dbp:79,p99_dbp:87},
+          "153-157":{p50_sbp:107,p90_sbp:121,p95_sbp:125,p99_sbp:133,p50_dbp:65,p90_dbp:75,p95_dbp:79,p99_dbp:87},
+          "157-161":{p50_sbp:109,p90_sbp:123,p95_sbp:127,p99_sbp:135,p50_dbp:66,p90_dbp:76,p95_dbp:80,p99_dbp:88},
+          "161-999":{p50_sbp:111,p90_sbp:125,p95_sbp:129,p99_sbp:137,p50_dbp:66,p90_dbp:76,p95_dbp:80,p99_dbp:88} },
+    /* 女14岁P99插值（范晖原表缺失，取13-17间值） */
+    14: { "0-145":  {p50_sbp:100,p90_sbp:114,p95_sbp:118,p99_sbp:126,p50_dbp:63,p90_dbp:73,p95_dbp:77,p99_dbp:85},
+          "145-149":{p50_sbp:102,p90_sbp:116,p95_sbp:120,p99_sbp:128,p50_dbp:64,p90_dbp:74,p95_dbp:78,p99_dbp:86},
+          "149-153":{p50_sbp:104,p90_sbp:118,p95_sbp:122,p99_sbp:130,p50_dbp:64,p90_dbp:74,p95_dbp:78,p99_dbp:86},
+          "153-157":{p50_sbp:106,p90_sbp:120,p95_sbp:124,p99_sbp:132,p50_dbp:65,p90_dbp:75,p95_dbp:79,p99_dbp:87},
+          "157-161":{p50_sbp:108,p90_sbp:122,p95_sbp:126,p99_sbp:134,p50_dbp:65,p90_dbp:75,p95_dbp:79,p99_dbp:87},
+          "161-165":{p50_sbp:110,p90_sbp:124,p95_sbp:128,p99_sbp:136,p50_dbp:65,p90_dbp:75,p95_dbp:79,p99_dbp:87},
+          "165-999":{p50_sbp:112,p90_sbp:126,p95_sbp:130,p99_sbp:138,p50_dbp:66,p90_dbp:76,p95_dbp:80,p99_dbp:88} },
+    /* 女15岁P99插值（范晖原表缺失，取13-17间值） */
+    15: { "0-148":  {p50_sbp:101,p90_sbp:115,p95_sbp:119,p99_sbp:127,p50_dbp:63,p90_dbp:73,p95_dbp:77,p99_dbp:85},
+          "148-152":{p50_sbp:103,p90_sbp:117,p95_sbp:121,p99_sbp:129,p50_dbp:64,p90_dbp:74,p95_dbp:78,p99_dbp:86},
+          "152-156":{p50_sbp:105,p90_sbp:119,p95_sbp:123,p99_sbp:131,p50_dbp:64,p90_dbp:74,p95_dbp:79,p99_dbp:86},
+          "156-160":{p50_sbp:107,p90_sbp:121,p95_sbp:125,p99_sbp:133,p50_dbp:65,p90_dbp:75,p95_dbp:79,p99_dbp:87},
+          "160-164":{p50_sbp:109,p90_sbp:123,p95_sbp:127,p99_sbp:135,p50_dbp:65,p90_dbp:75,p95_dbp:79,p99_dbp:87},
+          "164-168":{p50_sbp:111,p90_sbp:125,p95_sbp:129,p99_sbp:137,p50_dbp:66,p90_dbp:76,p95_dbp:80,p99_dbp:88},
+          "168-999":{p50_sbp:113,p90_sbp:127,p95_sbp:131,p99_sbp:139,p50_dbp:66,p90_dbp:76,p95_dbp:80,p99_dbp:88} },
+    /* 女16岁P99插值（范晖原表缺失，取13-17间值） */
+    16: { "0-151":  {p50_sbp:102,p90_sbp:116,p95_sbp:120,p99_sbp:128,p50_dbp:63,p90_dbp:74,p95_dbp:77,p99_dbp:85},
+          "151-155":{p50_sbp:104,p90_sbp:118,p95_sbp:122,p99_sbp:130,p50_dbp:64,p90_dbp:74,p95_dbp:78,p99_dbp:86},
+          "155-159":{p50_sbp:106,p90_sbp:120,p95_sbp:124,p99_sbp:132,p50_dbp:64,p90_dbp:75,p95_dbp:79,p99_dbp:86},
+          "159-163":{p50_sbp:108,p90_sbp:122,p95_sbp:126,p99_sbp:134,p50_dbp:65,p90_dbp:75,p95_dbp:79,p99_dbp:87},
+          "163-167":{p50_sbp:110,p90_sbp:124,p95_sbp:128,p99_sbp:136,p50_dbp:65,p90_dbp:75,p95_dbp:79,p99_dbp:87},
+          "167-171":{p50_sbp:112,p90_sbp:126,p95_sbp:130,p99_sbp:138,p50_dbp:66,p90_dbp:76,p95_dbp:80,p99_dbp:88},
+          "171-999":{p50_sbp:114,p90_sbp:128,p95_sbp:132,p99_sbp:140,p50_dbp:66,p90_dbp:76,p95_dbp:80,p99_dbp:88} },
+    17: { "0-154":  {p50_sbp:104,p90_sbp:118,p95_sbp:122,p99_sbp:130,p50_dbp:63,p90_dbp:73,p95_dbp:77,p99_dbp:85},
+          "154-157":{p50_sbp:105,p90_sbp:120,p95_sbp:124,p99_sbp:132,p50_dbp:65,p90_dbp:75,p95_dbp:78,p99_dbp:87},
+          "157-161":{p50_sbp:106,p90_sbp:121,p95_sbp:125,p99_sbp:133,p50_dbp:65,p90_dbp:76,p95_dbp:79,p99_dbp:87},
+          "161-164":{p50_sbp:108,p90_sbp:123,p95_sbp:127,p99_sbp:135,p50_dbp:65,p90_dbp:76,p95_dbp:79,p99_dbp:87},
+          "164-168":{p50_sbp:110,p90_sbp:125,p95_sbp:129,p99_sbp:137,p50_dbp:66,p90_dbp:76,p95_dbp:80,p99_dbp:88},
+          "168-172":{p50_sbp:112,p90_sbp:127,p95_sbp:131,p99_sbp:139,p50_dbp:66,p90_dbp:76,p95_dbp:80,p99_dbp:88},
+          "172-999":{p50_sbp:114,p90_sbp:129,p95_sbp:133,p99_sbp:141,p50_dbp:67,p90_dbp:77,p95_dbp:80,p99_dbp:89} },
+};
+
+// ============================================================
 // BMI标准参考
 // 数据来源：诸福棠儿科学 第8版 表2-19/2-20（2-18岁男童/女童BMI百分位数值表）
 // 按年龄分组，显示精确百分位
@@ -1664,7 +1904,7 @@ const Assessment = {
 
         // 高于 P97
         if (bmi > data.p97) {
-            return { display: '>P97', numeric: 98, isBelow3: false, isAbove97: true };
+            return { display: '>P97', numeric: null, isBelow3: false, isAbove97: true };
         }
 
         // 在 P3-P97 之间，线性插值
@@ -1799,13 +2039,19 @@ const Assessment = {
     },
 
     /**
-     * 评估血压（身高+年龄双维度，WS/T 610-2018）
+     * 评估血压（身高+年龄双维度，含1级/2级高血压分级）
      *
      * @param {number} systolic  - 收缩压（mmHg）
      * @param {number} diastolic - 舒张压（mmHg）
      * @param {number} ageMonths - 月龄
      * @param {string} gender    - 'male' | 'female'
      * @param {number|null} height - 身高（cm），有则精确评估；无则按P50身高组
+     *
+     * 高血压分级标准（范晖2017/WS/T 610-2018）：
+     *   正常：< P90
+     *   正常高值：P90 ≤ BP < P95
+     *   1级高血压（轻度）：P95 ≤ BP < P99
+     *   2级高血压（重度）：BP ≥ P99
      */
     assessBloodPressure(systolic, diastolic, ageMonths, gender, height) {
         const ageYears = Math.round(ageMonths / 12); // 四舍五入到整岁（WS/T 610-2018 §4.1.1）
@@ -1813,34 +2059,65 @@ const Assessment = {
 
         // ≥ 18岁：成人标准
         if (ageYears >= 18) {
-            let status, evaluation;
+            let status, evaluation, level;
             if (systolic >= 140 || diastolic >= 90) {
-                status = 'high';
-                evaluation = '血压偏高，建议就医评估';
+                status = 'high'; level = 'severe'; evaluation = '血压偏高（≥140/90mmHg），建议就医评估';
             } else if (systolic >= 120 || diastolic >= 80) {
-                status = 'elevated';
-                evaluation = '血压处于正常高值，建议监测';
+                status = 'elevated'; level = 'elevated'; evaluation = '血压正常高值（120-139/80-89mmHg），建议监测';
             } else {
-                status = 'normal';
-                evaluation = '血压正常';
+                status = 'normal'; level = 'normal'; evaluation = '血压正常';
             }
             return {
-                status, evaluation,
-                sbpP90: 120, sbpP95: 140, dbpP90: 80, dbpP95: 90,
-                ageNote: `${ageYears}岁（成人标准）`,
-                heightNote: '—',
-                standard: '成人标准'
+                status, evaluation, level,
+                sbpP90: 120, sbpP95: 140, sbpP99: null, dbpP90: 80, dbpP95: 90, dbpP99: null,
+                ageNote: `${ageYears}岁（成人标准）`, heightNote: '—', standard: '成人标准'
             };
         }
 
-        // 3-17岁：使用WS/T 610-2018表格标准
+        // 3-17岁：优先使用范晖2017身高别数据（含P99）
+        // 逻辑：有身高时使用范晖数据（按实际身高匹配），无身高时回退到WS/T 610-2018
+        if (height && height > 0 && ageYearsClamped >= 3 && ageYearsClamped <= 17) {
+            const fanKey = gender === 'male' ? 'fanBPByHeightMale' : 'fanBPByHeightFemale';
+            const fanData = GrowthData[fanKey];
+            const fanAgeData = fanData && fanData[ageYearsClamped];
+
+            if (fanAgeData) {
+                // 范晖数据：按实际身高匹配身高组
+                const bpRow = this._findFanBPGroup(fanAgeData, height);
+                if (bpRow) {
+                    const sbpP90 = bpRow.p90_sbp, dbpP90 = bpRow.p90_dbp;
+                    const sbpP95 = bpRow.p95_sbp, dbpP95 = bpRow.p95_dbp;
+                    const sbpP99 = bpRow.p99_sbp, dbpP99 = bpRow.p99_dbp;
+
+                    let status, evaluation, level;
+                    if (systolic >= sbpP99 || diastolic >= dbpP99) {
+                        status = 'high'; level = 'severe'; evaluation = `2级高血压（重度），SBP≥${sbpP99}mmHg和/或DBP≥${dbpP99}mmHg，建议及时就医`;
+                    } else if (systolic >= sbpP95 || diastolic >= dbpP95) {
+                        status = 'high'; level = 'mild'; evaluation = `1级高血压（轻度），${sbpP95}≤SBP<${sbpP99}mmHg和/或${dbpP95}≤DBP<${dbpP99}mmHg，建议进一步评估`;
+                    } else if (systolic >= sbpP90 || diastolic >= dbpP90 || systolic >= 120 || diastolic >= 80) {
+                        status = 'elevated'; level = 'elevated'; evaluation = '正常高值血压，建议定期监测';
+                    } else {
+                        status = 'normal'; level = 'normal'; evaluation = '血压正常';
+                    }
+
+                    return {
+                        status, evaluation, level,
+                        sbpP90, sbpP95, sbpP99, dbpP90, dbpP95, dbpP99,
+                        ageNote: `${ageYearsClamped}岁`, heightNote: `身高${height}cm`, standard: '范晖等2017'
+                    };
+                }
+            }
+
+            // 有身高但未匹配到范晖数据（理论上不会发生），回退到WS/T 610-2018
+        }
+
+        // 回退：使用WS/T 610-2018按身高百分位分组
         if (ageYearsClamped >= 7) {
             const bpTableKey = gender === 'male'
                 ? 'bloodPressureByHeight_male'
                 : 'bloodPressureByHeight_female';
             const bpTable = GrowthData[bpTableKey][ageYearsClamped];
 
-            // 确定身高组（有身高则精确，无身高则取P50组=索引4）
             let hGroup = 4; // 默认P50组
             let heightNote = '（未填身高，按P50估算）';
             const HGroupLabels = ['<P5','P5~P10','P10~P25','P25~P50','P50~P75','P75~P90','P90~P95','≥P95'];
@@ -1854,32 +2131,29 @@ const Assessment = {
             const dbpP90 = bpTable.p90.dbp[hGroup];
             const sbpP95 = bpTable.p95.sbp[hGroup];
             const dbpP95 = bpTable.p95.dbp[hGroup];
+            // WS/T 610-2018无P99，设为null表示不评估2级
+            const sbpP99 = null, dbpP99 = null;
 
-            let status, evaluation;
+            let status, evaluation, level;
             if (systolic >= sbpP95 || diastolic >= dbpP95) {
-                status = 'high';
-                evaluation = '血压偏高（≥P95），建议就医进一步评估';
+                status = 'high'; level = 'mild'; evaluation = '血压偏高（≥P95），建议就医进一步评估';
             } else if (systolic >= sbpP90 || diastolic >= dbpP90 || systolic >= 120 || diastolic >= 80) {
-                status = 'elevated';
-                evaluation = '正常高值血压（P90~P95），建议定期监测';
+                status = 'elevated'; level = 'elevated'; evaluation = '正常高值血压（P90~P95），建议定期监测';
             } else {
-                status = 'normal';
-                evaluation = '血压正常（<P90）';
+                status = 'normal'; level = 'normal'; evaluation = '血压正常（<P90）';
             }
 
             return {
-                status, evaluation,
-                sbpP90, sbpP95, dbpP90, dbpP95,
-                ageNote: `${ageYearsClamped}岁`,
-                heightNote,
-                standard: 'WS/T 610-2018'
+                status, evaluation, level,
+                sbpP90, sbpP95, sbpP99, dbpP90, dbpP95, dbpP99,
+                ageNote: `${ageYearsClamped}岁`, heightNote, standard: 'WS/T 610-2018'
             };
 
         } else {
             // 3-6岁：使用简化公式（2018高血压防治指南 表11）
             // 男：SBP_P95 = 100+2×Age，DBP_P95 = 65+Age
             // 女：SBP_P95 = 100+1.5×Age，DBP_P95 = 65+Age
-            // P90 ≈ P95 - 4
+            // P90 ≈ P95 - 4，P99 ≈ P95 + 5
             const age = Math.max(3, ageYearsClamped);
             let sbpP95, dbpP95;
             if (gender === 'male') {
@@ -1889,29 +2163,61 @@ const Assessment = {
                 sbpP95 = 100 + 1.5 * age;
                 dbpP95 = 65 + age;
             }
-            const sbpP90 = sbpP95 - 4;
-            const dbpP90 = dbpP95 - 4;
+            const sbpP90 = sbpP95 - 4, dbpP90 = dbpP95 - 4;
+            const sbpP99 = sbpP95 + 5, dbpP99 = dbpP95 + 5;
 
-            let status, evaluation;
-            if (systolic >= sbpP95 || diastolic >= dbpP95) {
-                status = 'high';
-                evaluation = '血压偏高（≥P95），建议就医进一步评估';
+            let status, evaluation, level;
+            if (systolic >= sbpP99 || diastolic >= dbpP99) {
+                status = 'high'; level = 'severe'; evaluation = `2级高血压（重度），SBP≥${sbpP99}mmHg，建议及时就医`;
+            } else if (systolic >= sbpP95 || diastolic >= dbpP95) {
+                status = 'high'; level = 'mild'; evaluation = `1级高血压（轻度），${sbpP95}≤SBP<${sbpP99}mmHg，建议进一步评估`;
             } else if (systolic >= sbpP90 || diastolic >= dbpP90) {
-                status = 'elevated';
-                evaluation = '正常高值血压（P90~P95），建议定期监测';
+                status = 'elevated'; level = 'elevated'; evaluation = '正常高值血压，建议定期监测';
             } else {
-                status = 'normal';
-                evaluation = '血压正常（<P90）';
+                status = 'normal'; level = 'normal'; evaluation = '血压正常';
             }
 
             return {
-                status, evaluation,
-                sbpP90, sbpP95, dbpP90, dbpP95,
-                ageNote: `${age}岁`,
-                heightNote: '（3-6岁使用简化公式）',
+                status, evaluation, level,
+                sbpP90, sbpP95, sbpP99, dbpP90, dbpP95, dbpP99,
+                ageNote: `${age}岁`, heightNote: '（3-6岁使用简化公式）',
                 standard: '中国高血压防治指南2018'
             };
         }
+    },
+
+    /**
+     * 根据身高在范晖身高别血压数据中查找匹配的身高组
+     * @param {Object} fanAgeData - fanBPByHeightMale/Female[age] 数据
+     * @param {number} height - 身高（cm）
+     * @returns {Object|null} 匹配的身高组数据，或null
+     */
+    _findFanBPGroup(fanAgeData, height) {
+        const keys = Object.keys(fanAgeData);
+        // 按下限排序
+        const sorted = keys.sort((a, b) => {
+            const getLo = k => {
+                const m = k.match(/^(\d+)-/);
+                return m ? parseInt(m[1]) : (k.includes('999') ? 9999 : 0);
+            };
+            return getLo(a) - getLo(b);
+        });
+
+        for (const key of sorted) {
+            const row = fanAgeData[key];
+            const lo = key.startsWith('0-') ? 0 : parseInt(key.split('-')[0]);
+            const hi = key.includes('-999') ? 9999 : parseInt(key.split('-')[1]);
+
+            if (hi === 9999) {
+                if (height >= lo) return row;
+            } else if (lo === 0) {
+                if (height <= hi) return row;
+            } else {
+                if (height >= lo && height <= hi) return row;
+            }
+        }
+        // 取最接近的
+        return fanAgeData[sorted[sorted.length - 1]] || null;
     },
 
     /**
@@ -2206,16 +2512,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // 更新血压参考范围说明
             const bpRangeEl = document.getElementById('bpRange');
-            bpRangeEl.innerHTML =
+            let rangeHtml =
                 `P90参考上限：收缩压 <b>${bpResult.sbpP90}</b> / 舒张压 <b>${bpResult.dbpP90}</b> mmHg ` +
-                `&nbsp;|&nbsp; P95高血压线：收缩压 <b>${bpResult.sbpP95}</b> / 舒张压 <b>${bpResult.dbpP95}</b> mmHg` +
+                `&nbsp;|&nbsp; P95高血压线：收缩压 <b>${bpResult.sbpP95}</b> / 舒张压 <b>${bpResult.dbpP95}</b> mmHg`;
+            // 范晖数据有P99，可显示2级高血压分度线
+            if (bpResult.sbpP99 != null) {
+                rangeHtml +=
+                    `&nbsp;|&nbsp; P99（2级高血压阈值）：收缩压 <b>${bpResult.sbpP99}</b> / 舒张压 <b>${bpResult.dbpP99}</b> mmHg`;
+            }
+            rangeHtml +=
                 `<br><span style="font-size:0.8em;color:#999">${bpResult.ageNote} &nbsp;${bpResult.heightNote} &nbsp;依据：${bpResult.standard}</span>`;
+            bpRangeEl.innerHTML = rangeHtml;
 
             const bpEvalEl = document.getElementById('bpEval');
             bpEvalEl.textContent = bpResult.evaluation;
             bpEvalEl.className = 'result-evaluation eval-' + (
                 bpResult.status === 'normal' ? 'normal' :
-                bpResult.status === 'elevated' ? 'warning' : 'high'
+                bpResult.status === 'elevated' ? 'warning' :
+                bpResult.level === 'severe' ? 'severe' : 'high'
             );
         } else {
             document.getElementById('bpResult').style.display = 'none';
