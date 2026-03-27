@@ -2491,12 +2491,10 @@ document.addEventListener('DOMContentLoaded', function () {
             bmiEvalEl.className    = `result-evaluation eval-${bmiResult.level}`;
 
             // 添加BMI百分位显示（诸福棠儿科学）
+            // 使用 bmiResult.display 而非 percentile 数值比较，避免 null 值导致的错误判断（如 null < 3 返回 true）
             const bmiPercentileEl = document.getElementById('bmiPercentile');
             if (bmiPercentileEl) {
-                const pText = bmiResult.percentile > 97 ? '>P97' :
-                              bmiResult.percentile < 3 ? '<P3' :
-                              `P${Math.round(bmiResult.percentile)}`;
-                bmiPercentileEl.textContent = pText;
+                bmiPercentileEl.textContent = bmiResult.display;
             }
         } else {
             bmiBlock.style.display = 'none';
