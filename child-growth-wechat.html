@@ -1664,7 +1664,7 @@ const Assessment = {
 
         // 高于 P97
         if (bmi > data.p97) {
-            return { display: '>P97', numeric: null, isBelow3: false, isAbove97: true };
+            return { display: '>P97', numeric: 98, isBelow3: false, isAbove97: true };
         }
 
         // 在 P3-P97 之间，线性插值
